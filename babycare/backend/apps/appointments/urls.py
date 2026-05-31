@@ -7,4 +7,5 @@ urlpatterns = [
     path('my/',               views.MyAppointmentsView.as_view()),
     path('doctor/',           views.DoctorAppointmentsView.as_view()),
     path('<int:pk>/status/',  views.UpdateAppointmentStatusView.as_view()),
+    path('available-slots/',  views.AvailableSlotsView.as_view()),
 ]

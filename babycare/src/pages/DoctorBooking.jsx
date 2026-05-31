@@ -3,30 +3,38 @@ import { useNavigate } from "react-router-dom";
 import {
   FaStar, FaUserMd, FaHospital, FaMoneyBillWave,
   FaCheckCircle, FaArrowRight, FaClock,
-  FaMapMarkerAlt, FaFilter,
+  FaMapMarkerAlt, FaFilter, FaCalendarAlt,
 } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
-import { getPublicDoctors, bookAppointment } from "../api/appointments";
+import { getPublicDoctors, bookAppointment, getAvailableSlots } from "../api/appointments";
 import DoctorAvatar from "../components/DoctorAvatar";
 
 const MINT       = "#2a9d5c";
 const MINT_LIGHT = "#e8f8ef";
 const MINT_DARK  = "#1a6e3f";
 
-// Time slots — doctors ke liye fixed options
-const TIME_SLOTS = ["10:00 AM", "11:30 AM", "2:00 PM", "3:30 PM", "5:00 PM"];
-
 export default function DoctorBooking() {
   const navigate = useNavigate();
 
-  const [step, setStep]       = useState("list");   // list | confirm | success
+  const [step, setStep]       = useState("list");
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState("");
 
-  const [selDoc, setSelDoc]   = useState(null);     // selected doctor object
+  const [selDoc, setSelDoc]   = useState(null);
   const [selSlot, setSelSlot] = useState("");
   const [filter, setFilter]   = useState("All");
+
+  // ⬇️ NEW: Date selection + dynamic slots
+  const today = new Date().toISOString().split("T")[0];
+  const maxDateObj = new Date();
+  maxDateObj.setDate(maxDateObj.getDate() + 30);
+  const maxDate = maxDateObj.toISOString().split("T")[0];
+
+  const [selectedDate, setSelectedDate] = useState(today);
+  const [allSlots, setAllSlots]         = useState([]);
+  const [bookedSlots, setBookedSlots]   = useState([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
 
   // Booking form
   const [babyName, setBabyName] = useState("");
@@ -36,7 +44,7 @@ export default function DoctorBooking() {
   const [phone, setPhone]       = useState("");
   const [bookingLoading, setBookingLoading] = useState(false);
 
-  // ─── Load doctors from backend ───
+  // ─── Load doctors ───
   useEffect(() => {
     const loadDoctors = async () => {
       setLoading(true);
@@ -44,7 +52,6 @@ export default function DoctorBooking() {
         const data = await getPublicDoctors();
         setDoctors(data);
       } catch (err) {
-        console.error("Doctors load error:", err);
         setError("Doctors load nahi ho sake. Dobara try karein.");
       } finally {
         setLoading(false);
@@ -52,6 +59,27 @@ export default function DoctorBooking() {
     };
     loadDoctors();
   }, []);
+
+  // ─── Load available slots when date OR doctor changes ───
+  useEffect(() => {
+    if (!selDoc || !selectedDate) return;
+
+    const loadSlots = async () => {
+      setSlotsLoading(true);
+      setSelSlot(""); // Reset selected slot when date changes
+      try {
+        const data = await getAvailableSlots(selDoc.id, selectedDate);
+        setAllSlots(data.all_slots);
+        setBookedSlots(data.booked_slots);
+      } catch (err) {
+        console.error("Slots load error:", err);
+        setError("Time slots load nahi ho sake");
+      } finally {
+        setSlotsLoading(false);
+      }
+    };
+    loadSlots();
+  }, [selDoc, selectedDate]);
 
   // ─── Filter doctors ───
   const specialties = ["All", ...new Set(doctors.map((d) => d.specialty))];
@@ -65,16 +93,13 @@ export default function DoctorBooking() {
     setError("");
 
     try {
-      // Aaj ki date (YYYY-MM-DD format)
-      const today = new Date().toISOString().split("T")[0];
-
       await bookAppointment({
         doctor: selDoc.id,
         baby_name: babyName,
         baby_age: babyAge,
         symptom: symptom,
         notes: notes,
-        appointment_date: today,
+        appointment_date: selectedDate,
         time_slot: selSlot,
         contact_phone: phone,
       });
@@ -88,7 +113,13 @@ export default function DoctorBooking() {
     }
   };
 
-  const canBook = babyName && babyAge && symptom && phone && selSlot;
+  const canBook = babyName && babyAge && symptom && phone && selSlot && selectedDate;
+
+  // Helper: format date nicely
+  const formatDate = (dateStr) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  };
 
   return (
     <div style={s.root}>
@@ -104,12 +135,13 @@ export default function DoctorBooking() {
             <h2 style={s.successTitle}>Appointment Booked! 🎉</h2>
             <div style={s.successCard} className="bc-anim-fadeUp bc-d1">
               {[
-                ["Doctor", selDoc?.full_name],
-                ["Specialty", selDoc?.specialty],
-                ["Baby", babyName],
-                ["Time Slot", selSlot],
-                ["Symptom", symptom],
-                ["Fee", `Rs. ${selDoc?.consultation_fee}`],
+                ["Doctor",     selDoc?.full_name],
+                ["Specialty",  selDoc?.specialty],
+                ["Date",       formatDate(selectedDate)],
+                ["Time Slot",  selSlot],
+                ["Baby",       babyName],
+                ["Symptom",    symptom],
+                ["Fee",        `Rs. ${selDoc?.consultation_fee}`],
               ].map(([k, v]) => (
                 <div key={k} style={s.sRow}>
                   <span style={s.sKey}>{k}</span>
@@ -125,7 +157,7 @@ export default function DoctorBooking() {
                 View My Appointments
               </button>
               <button style={s.btnOutline} className="bc-btn-outline-glow" onClick={() => {
-                setStep("list"); setSelDoc(null); setSelSlot("");
+                setStep("list"); setSelDoc(null); setSelSlot(""); setSelectedDate(today);
                 setBabyName(""); setBabyAge(""); setSymptom(""); setNotes(""); setPhone("");
               }}>
                 Book Another
@@ -162,19 +194,67 @@ export default function DoctorBooking() {
               <div style={s.feeBadge}>Rs. {selDoc.consultation_fee}</div>
             </div>
 
-            {/* Time slots */}
-            <label style={s.label}><FaClock size={12} color={MINT} /> Choose Time Slot</label>
-            <div style={s.slotsGrid}>
-              {TIME_SLOTS.map((slot) => (
-                <button
-                  key={slot}
-                  onClick={() => setSelSlot(slot)}
-                  style={{ ...s.slotBtn, ...(selSlot === slot ? s.slotActive : {}) }}
-                >
-                  {selSlot === slot && <FaCheckCircle size={11} color={MINT} className="bc-check-pop" />} {slot}
-                </button>
-              ))}
+            {/* ⬇️ NEW: DATE PICKER */}
+            <label style={s.label}><FaCalendarAlt size={12} color={MINT} /> Select Appointment Date</label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              min={today}
+              max={maxDate}
+              style={s.dateInput}
+              className="bc-input-glow"
+            />
+            <div style={s.dateHint}>
+              📅 Aaj se 30 din tak ki date select kar sakte hain · Selected: <strong>{formatDate(selectedDate)}</strong>
             </div>
+
+            {/* TIME SLOTS — with availability */}
+            <label style={s.label}><FaClock size={12} color={MINT} /> Choose Time Slot</label>
+
+            {slotsLoading ? (
+              <div style={s.slotsLoading}>
+                <span className="bc-spinner" /> Slots check ho rahe hain...
+              </div>
+            ) : (
+              <>
+                <div style={s.slotsGrid}>
+                  {allSlots.map((slot) => {
+                    const isBooked = bookedSlots.includes(slot);
+                    const isSelected = selSlot === slot;
+                    return (
+                      <button
+                        key={slot}
+                        onClick={() => !isBooked && setSelSlot(slot)}
+                        disabled={isBooked}
+                        style={{
+                          ...s.slotBtn,
+                          ...(isSelected ? s.slotActive : {}),
+                          ...(isBooked ? s.slotBooked : {}),
+                        }}
+                        title={isBooked ? "Yeh slot already booked hai" : "Click karke select karein"}
+                      >
+                        {isSelected && <FaCheckCircle size={11} color={MINT} className="bc-check-pop" />}
+                        <span style={{ textDecoration: isBooked ? "line-through" : "none" }}>{slot}</span>
+                        {isBooked && <span style={s.bookedLabel}>Booked</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Slot availability summary */}
+                <div style={s.slotSummary}>
+                  <span style={{ color: MINT, fontWeight: 700 }}>
+                    ✅ {allSlots.length - bookedSlots.length} available
+                  </span>
+                  {bookedSlots.length > 0 && (
+                    <span style={{ color: "#dc2626", fontWeight: 700 }}>
+                      ❌ {bookedSlots.length} booked
+                    </span>
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Form */}
             <label style={s.label}>Baby's Name *</label>
@@ -224,7 +304,6 @@ export default function DoctorBooking() {
               <p style={s.pageSub}>Book with our verified pediatric & homeopathic specialists</p>
             </div>
 
-            {/* Loading */}
             {loading ? (
               <div style={s.loadingBox}>
                 <span className="bc-spinner" style={{ width: 40, height: 40 }} />
@@ -240,7 +319,6 @@ export default function DoctorBooking() {
               </div>
             ) : (
               <>
-                {/* Filter */}
                 <div style={s.filterRow} className="bc-anim-fadeUp bc-d1">
                   <FaFilter size={13} color="#9ab5a5" style={{ marginTop: 2 }} />
                   {specialties.map((f) => (
@@ -254,7 +332,6 @@ export default function DoctorBooking() {
                   ))}
                 </div>
 
-                {/* Doctors Grid */}
                 <div style={s.docGrid}>
                   {filteredDoctors.map((doc, i) => (
                     <div
@@ -296,7 +373,7 @@ export default function DoctorBooking() {
                       <button
                         style={s.btnPrimary}
                         className="bc-btn-glow"
-                        onClick={() => { setSelDoc(doc); setStep("confirm"); setSelSlot(""); }}
+                        onClick={() => { setSelDoc(doc); setStep("confirm"); setSelSlot(""); setSelectedDate(today); }}
                       >
                         Book Appointment <FaArrowRight size={12} />
                       </button>
@@ -347,9 +424,32 @@ const s = {
   docSummary: { background: "rgba(255,255,255,0.8)", backdropFilter: "blur(14px)", border: "1.5px solid rgba(224,237,230,0.7)", borderRadius: 13, padding: "18px 20px", display: "flex", alignItems: "center", gap: 14, marginBottom: 20, flexWrap: "wrap", boxShadow: "0 6px 22px rgba(42,157,92,0.1)" },
   feeBadge: { marginLeft: "auto", background: "#e8f8ef", color: "#1a6e3f", fontWeight: 900, fontSize: 14, borderRadius: 9, padding: "7px 14px" },
   label: { fontSize: 13, fontWeight: 800, color: "#3d5a48", display: "flex", alignItems: "center", gap: 6, margin: "18px 0 9px" },
+
+  // ⬇️ NEW: Date picker styles
+  dateInput: {
+    width: "100%",
+    border: "2px solid #d4eddf",
+    borderRadius: 10,
+    padding: "12px 14px",
+    fontSize: 15,
+    fontFamily: "inherit",
+    color: "#1a2e24",
+    outline: "none",
+    background: "rgba(250,255,254,0.7)",
+    fontWeight: 700,
+    cursor: "pointer",
+    boxSizing: "border-box",
+  },
+  dateHint: { fontSize: 11.5, color: "#5a7a6a", marginTop: 6, padding: "6px 10px", background: "rgba(232,248,239,0.5)", borderRadius: 7 },
+
   slotsGrid: { display: "flex", gap: 9, flexWrap: "wrap" },
-  slotBtn: { background: "rgba(240,250,244,0.7)", border: "1.5px solid #d4eddf", borderRadius: 9, padding: "9px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", color: "#3d5a48", display: "flex", alignItems: "center", gap: 5, transition: "all 0.22s ease" },
+  slotBtn: { background: "rgba(240,250,244,0.7)", border: "1.5px solid #d4eddf", borderRadius: 9, padding: "9px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", color: "#3d5a48", display: "flex", alignItems: "center", gap: 5, transition: "all 0.22s ease", position: "relative" },
   slotActive: { background: "#e8f8ef", border: "2px solid #2a9d5c", color: "#1a6e3f", boxShadow: "0 0 0 3px rgba(42,157,92,0.12)" },
+  slotBooked: { background: "#fee2e2", border: "1.5px solid #fca5a5", color: "#991b1b", cursor: "not-allowed", opacity: 0.7 },
+  bookedLabel: { fontSize: 9.5, background: "#dc2626", color: "#fff", padding: "1px 6px", borderRadius: 4, marginLeft: 4, fontWeight: 800 },
+  slotsLoading: { display: "flex", alignItems: "center", gap: 10, padding: "12px 16px", background: "rgba(232,248,239,0.5)", borderRadius: 9, fontSize: 13, color: "#5a7a6a", fontWeight: 700 },
+  slotSummary: { display: "flex", gap: 14, marginTop: 10, fontSize: 12, padding: "8px 12px", background: "rgba(250,255,254,0.7)", borderRadius: 7 },
+
   input: { width: "100%", border: "1.5px solid #d4eddf", borderRadius: 9, padding: "10px 13px", fontSize: 14, fontFamily: "inherit", color: "#1a2e24", outline: "none", background: "rgba(250,255,254,0.7)", display: "block", boxSizing: "border-box" },
   textarea: { width: "100%", border: "1.5px solid #d4eddf", borderRadius: 9, padding: "10px 13px", fontSize: 14, fontFamily: "inherit", color: "#1a2e24", outline: "none", background: "rgba(250,255,254,0.7)", resize: "vertical", boxSizing: "border-box" },
   feeRow: { display: "flex", justifyContent: "space-between", alignItems: "center", background: "#e8f8ef", borderRadius: 10, padding: "13px 16px", margin: "16px 0 14px" },

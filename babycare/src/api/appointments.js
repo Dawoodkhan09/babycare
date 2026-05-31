@@ -34,3 +34,12 @@ export const updateAppointmentStatus = async (id, status) => {
   const response = await api.patch(`/appointments/${id}/status/`, { status });
   return response.data;
 };
+
+
+// ─── Get available time slots for doctor + date ───
+export const getAvailableSlots = async (doctorId, date) => {
+  const response = await api.get(
+    `/appointments/available-slots/?doctor=${doctorId}&date=${date}`
+  );
+  return response.data;
+};

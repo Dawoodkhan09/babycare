@@ -11,6 +11,12 @@ import {
   adminToggleDoctorActive,
   adminDeleteDoctor,
 } from "../api/doctors";
+import {
+  adminGetComplaints,
+  adminGetComplaintDetail,
+  adminRespondComplaint,
+  adminGetComplaintStats,
+} from "../api/complaints";
 import DoctorAvatar from "../components/DoctorAvatar";
 
 const MINT = "#2a9d5c";
@@ -28,8 +34,23 @@ const NAV_ITEMS = [
   { icon: "⏳", label: "Pending Apps",      id: "pending" },
   { icon: "👨‍⚕️", label: "All Doctors",      id: "doctors" },
   { icon: "📋", label: "All Applications", id: "applications" },
+  { icon: "💬", label: "Complaints",       id: "complaints" },
   { icon: "⚙️", label: "Settings",         id: "settings" },
 ];
+
+const COMPLAINT_STATUS_COLORS = {
+  open:        { bg: "#fee2e2", color: "#991b1b" },
+  in_progress: { bg: "#fff8e6", color: "#7a5a10" },
+  resolved:    { bg: "#e8f8ef", color: "#1a6e3f" },
+  closed:      { bg: "#f3f4f6", color: "#374151" },
+};
+
+const COMPLAINT_PRIORITY_COLORS = {
+  low:    { bg: "#f0f9ff", color: "#075985" },
+  medium: { bg: "#fff8e6", color: "#7a5a10" },
+  high:   { bg: "#ffedd5", color: "#9a3412" },
+  urgent: { bg: "#fee2e2", color: "#991b1b" },
+};
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -44,11 +65,19 @@ export default function AdminDashboard() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Complaints data
+  const [complaints, setComplaints] = useState([]);
+  const [complaintStats, setComplaintStats] = useState(null);
+  const [complaintFilter, setComplaintFilter] = useState({ status: "", priority: "", category: "" });
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
+  const [responseText, setResponseText] = useState("");
+  const [responseStatus, setResponseStatus] = useState("in_progress");
+
   // Filter
   const [statusFilter, setStatusFilter] = useState("all");
 
   // Modals
-  const [selectedApp, setSelectedApp] = useState(null);   // detailed application
+  const [selectedApp, setSelectedApp] = useState(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [showCredentials, setShowCredentials] = useState(null);
@@ -62,6 +91,67 @@ export default function AdminDashboard() {
       setStats(data);
     } catch (err) {
       console.error("Stats load error:", err);
+    }
+  };
+
+  // ─── Load Complaints ───
+  const loadComplaints = async () => {
+    setLoading(true);
+    try {
+      const filters = {};
+      if (complaintFilter.status) filters.status = complaintFilter.status;
+      if (complaintFilter.priority) filters.priority = complaintFilter.priority;
+      if (complaintFilter.category) filters.category = complaintFilter.category;
+      const data = await adminGetComplaints(filters);
+      setComplaints(data);
+    } catch (err) {
+      console.error("Complaints load error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ─── Load Complaint Stats ───
+  const loadComplaintStats = async () => {
+    try {
+      const data = await adminGetComplaintStats();
+      setComplaintStats(data);
+    } catch (err) {
+      console.error("Complaint stats error:", err);
+    }
+  };
+
+  // ─── View complaint detail ───
+  const viewComplaintDetail = async (id) => {
+    try {
+      const data = await adminGetComplaintDetail(id);
+      setSelectedComplaint(data);
+      setResponseText(data.admin_response || "");
+      setResponseStatus(data.status === "open" ? "in_progress" : data.status);
+    } catch (err) {
+      console.error("Detail error:", err);
+    }
+  };
+
+  // ─── Submit response ───
+  const handleSubmitResponse = async () => {
+    if (!responseText.trim() || responseText.length < 5) {
+      setErrorMsg("Response kam se kam 5 characters ka hona chahiye");
+      return;
+    }
+    setActionLoading(true);
+    setErrorMsg("");
+    try {
+      await adminRespondComplaint(selectedComplaint.id, responseText, responseStatus);
+      setSelectedComplaint(null);
+      setResponseText("");
+      loadComplaints();
+      loadComplaintStats();
+      alert(`✅ Response submitted! Status: ${responseStatus}`);
+    } catch (err) {
+      setErrorMsg(err.response?.data?.detail || "Response submit fail ho gaya");
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -94,6 +184,7 @@ export default function AdminDashboard() {
   // ─── On mount + tab change ───
   useEffect(() => {
     loadStats();
+    loadComplaintStats();
   }, []);
 
   useEffect(() => {
@@ -103,8 +194,11 @@ export default function AdminDashboard() {
       loadApplications(statusFilter);
     } else if (activeNav === "doctors") {
       loadDoctors();
+    } else if (activeNav === "complaints") {
+      loadComplaints();
+      loadComplaintStats();
     }
-  }, [activeNav, statusFilter]);
+  }, [activeNav, statusFilter, complaintFilter]);
 
   // ─── View application detail ───
   const viewApplication = async (id) => {
@@ -247,6 +341,9 @@ export default function AdminDashboard() {
               {sidebarOpen && <span style={s.navLabel}>{item.label}</span>}
               {sidebarOpen && item.id === "pending" && stats?.pending_applications > 0 && (
                 <span style={s.notifBadge}>{stats.pending_applications}</span>
+              )}
+              {sidebarOpen && item.id === "complaints" && complaintStats?.open > 0 && (
+                <span style={s.notifBadge}>{complaintStats.open}</span>
               )}
             </button>
           ))}
@@ -482,6 +579,150 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* ═══════════════ COMPLAINTS ═══════════════ */}
+          {activeNav === "complaints" && (
+            <div key="complaints" className="bc-anim-fadeUp">
+
+              {/* Complaints Stats */}
+              {complaintStats && (
+                <div style={s.statsGrid}>
+                  {[
+                    { icon: "📋", label: "Total Complaints", value: complaintStats.total,       color: "#1a5c8a" },
+                    { icon: "🔴", label: "Open",            value: complaintStats.open,         color: "#dc2626" },
+                    { icon: "⏳", label: "In Progress",     value: complaintStats.in_progress,  color: "#fbbf24" },
+                    { icon: "✅", label: "Resolved",        value: complaintStats.resolved,     color: MINT_DARK },
+                    { icon: "🚨", label: "Urgent",          value: complaintStats.urgent,       color: "#991b1b" },
+                    { icon: "👨‍⚕️", label: "Against Doctors", value: complaintStats.against_doctors, color: "#7c3aed" },
+                  ].map((stat, i) => (
+                    <div key={stat.label} style={s.statCard} className={`bc-glow-on-hover bc-anim-fadeUp bc-d${i + 1}`}>
+                      <div style={{ ...s.statIcon, background: `${stat.color}15` }}>{stat.icon}</div>
+                      <div>
+                        <div style={s.statValue}>{stat.value}</div>
+                        <div style={s.statLabel}>{stat.label}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Complaints List */}
+              <div style={s.section} className="bc-anim-fadeUp bc-d3">
+                <div style={s.sectionHeader}>
+                  <h2 style={s.sectionTitle}>💬 All Complaints</h2>
+                  <span style={s.countBadge}>{complaints.length} complaints</span>
+                </div>
+
+                {/* Filters */}
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
+                  <select
+                    value={complaintFilter.status}
+                    onChange={(e) => setComplaintFilter({ ...complaintFilter, status: e.target.value })}
+                    style={s.filterSelect}
+                  >
+                    <option value="">All Status</option>
+                    <option value="open">Open</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                  </select>
+
+                  <select
+                    value={complaintFilter.priority}
+                    onChange={(e) => setComplaintFilter({ ...complaintFilter, priority: e.target.value })}
+                    style={s.filterSelect}
+                  >
+                    <option value="">All Priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+
+                  <select
+                    value={complaintFilter.category}
+                    onChange={(e) => setComplaintFilter({ ...complaintFilter, category: e.target.value })}
+                    style={s.filterSelect}
+                  >
+                    <option value="">All Categories</option>
+                    <option value="against_doctor">Against Doctor</option>
+                    <option value="against_user">Against User</option>
+                    <option value="system_issue">System Issue</option>
+                    <option value="payment_issue">Payment Issue</option>
+                    <option value="appointment">Appointment</option>
+                    <option value="feedback">Feedback</option>
+                    <option value="other">Other</option>
+                  </select>
+
+                  {(complaintFilter.status || complaintFilter.priority || complaintFilter.category) && (
+                    <button
+                      style={s.filterReset}
+                      onClick={() => setComplaintFilter({ status: "", priority: "", category: "" })}
+                    >
+                      ✕ Clear Filters
+                    </button>
+                  )}
+                </div>
+
+                {/* List */}
+                {loading ? (
+                  <div style={s.loadingBox}>
+                    <span className="bc-spinner" />
+                    <p>Loading complaints...</p>
+                  </div>
+                ) : complaints.length === 0 ? (
+                  <div style={s.emptyState}>
+                    <div style={{ fontSize: 56, marginBottom: 12 }} className="bc-float">📭</div>
+                    <p style={{ fontSize: 14, color: "#5a7a6a" }}>Koi complaint nahi mili</p>
+                  </div>
+                ) : (
+                  <div style={s.appsGrid}>
+                    {complaints.map((c, i) => (
+                      <div key={c.id} style={s.appCard} className={`bc-glow-on-hover bc-anim-fadeUp bc-d${Math.min(i + 1, 8)}`}>
+                        <div style={s.appCardTop}>
+                          <div style={s.appId}>#{c.id}</div>
+                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                            <span style={{ ...s.statusBadge, ...COMPLAINT_PRIORITY_COLORS[c.priority] }}>{c.priority_display}</span>
+                            <span style={{ ...s.statusBadge, ...COMPLAINT_STATUS_COLORS[c.status] }}>{c.status_display}</span>
+                          </div>
+                        </div>
+                        <div style={{ fontSize: 14.5, fontWeight: 900, color: "#0f2018", margin: "8px 0 4px" }}>{c.subject}</div>
+                        <div style={{ fontSize: 12, color: "#5a7a6a", fontWeight: 700, marginBottom: 8 }}>
+                          🏷️ {c.category_display}
+                        </div>
+
+                        <div style={{ paddingTop: 10, borderTop: "1px solid rgba(212,237,223,0.5)", display: "flex", flexDirection: "column", gap: 6 }}>
+                          <div style={{ fontSize: 12, color: "#3d5a48", fontWeight: 700 }}>
+                            👤 By: {c.submitted_by_name}
+                            <span style={{ fontSize: 10, marginLeft: 6, color: "#9ab5a5", textTransform: "uppercase" }}>
+                              ({c.submitted_by_role})
+                            </span>
+                          </div>
+                          {c.against_doctor_name && (
+                            <div style={{ fontSize: 12, color: "#3d5a48", fontWeight: 700 }}>
+                              👨‍⚕️ Against: Dr. {c.against_doctor_name}
+                            </div>
+                          )}
+                          {c.against_user_name && (
+                            <div style={{ fontSize: 12, color: "#3d5a48", fontWeight: 700 }}>
+                              👤 Against: {c.against_user_name}
+                            </div>
+                          )}
+                        </div>
+
+                        <div style={s.appFooter}>
+                          <span style={s.appDate}>📅 {new Date(c.created_at).toLocaleDateString()}</span>
+                          <button style={s.viewBtn} className="bc-btn-glow" onClick={() => viewComplaintDetail(c.id)}>
+                            {c.status === "open" ? "Respond →" : "View Details"}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* ═══════════════ SETTINGS ═══════════════ */}
           {activeNav === "settings" && (
             <div style={s.section} key="settings" className="bc-anim-fadeUp">
@@ -671,6 +912,156 @@ export default function AdminDashboard() {
                 Done
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════ COMPLAINT DETAIL + RESPOND MODAL ═══════════════ */}
+      {selectedComplaint && (
+        <div style={s.modalOverlay} onClick={(e) => { if (e.target === e.currentTarget) { setSelectedComplaint(null); setResponseText(""); setErrorMsg(""); } }}>
+          <div style={s.modal} className="bc-anim-scaleIn">
+            <div style={s.modalHeader}>
+              <div>
+                <div style={{ fontSize: 12, color: "#9ab5a5", fontWeight: 700 }}>Complaint #{selectedComplaint.id}</div>
+                <h2 style={s.modalTitle}>{selectedComplaint.subject}</h2>
+              </div>
+              <button style={s.closeBtn} onClick={() => { setSelectedComplaint(null); setResponseText(""); setErrorMsg(""); }}>✕</button>
+            </div>
+
+            <div style={s.modalBody}>
+              {/* Meta info */}
+              <h3 style={s.modalSection}>📋 Complaint Info</h3>
+              <div style={s.detailGrid}>
+                <DetailItem label="Category"      value={selectedComplaint.category_display} />
+                <DetailItem label="Priority"      value={selectedComplaint.priority_display} />
+                <DetailItem label="Status"        value={selectedComplaint.status_display} />
+                <DetailItem label="Submitted"     value={new Date(selectedComplaint.created_at).toLocaleString()} />
+              </div>
+
+              {/* Submitter */}
+              <h3 style={s.modalSection}>👤 Submitted By</h3>
+              <div style={s.detailGrid}>
+                <DetailItem label="Name"  value={selectedComplaint.submitted_by_name} />
+                <DetailItem label="Email" value={selectedComplaint.submitted_by_email} />
+                <DetailItem label="Role"  value={(selectedComplaint.submitted_by_role || "").toUpperCase()} />
+              </div>
+
+              {/* Against (if any) */}
+              {(selectedComplaint.against_doctor_name || selectedComplaint.against_user_name) && (
+                <>
+                  <h3 style={s.modalSection}>⚠️ Complaint Against</h3>
+                  <div style={s.detailGrid}>
+                    {selectedComplaint.against_doctor_name && (
+                      <DetailItem label="Doctor" value={`Dr. ${selectedComplaint.against_doctor_name}`} fullWidth />
+                    )}
+                    {selectedComplaint.against_user_name && (
+                      <DetailItem label="User" value={selectedComplaint.against_user_name} fullWidth />
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Description */}
+              <h3 style={s.modalSection}>📝 Full Description</h3>
+              <div style={{ background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 10, padding: "14px 16px", fontSize: 14, color: "#1f2937", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
+                {selectedComplaint.description}
+              </div>
+
+              {/* Attachment */}
+              {selectedComplaint.attachment_url && (
+                <>
+                  <h3 style={s.modalSection}>📎 Attachment</h3>
+                  <a href={selectedComplaint.attachment_url} target="_blank" rel="noreferrer" style={{ display: "inline-block", background: MINT_LIGHT, color: MINT_DARK, padding: "10px 16px", borderRadius: 9, fontSize: 13, fontWeight: 800, textDecoration: "none" }}>
+                    🔗 View Attachment
+                  </a>
+                </>
+              )}
+
+              {/* Previous response */}
+              {selectedComplaint.admin_response && (
+                <>
+                  <h3 style={s.modalSection}>💬 Previous Response</h3>
+                  <div style={{ background: "rgba(232,248,239,0.6)", border: `1px solid ${MINT}`, borderRadius: 10, padding: "12px 16px" }}>
+                    <div style={{ fontSize: 11.5, color: "#5a7a6a", fontWeight: 700, marginBottom: 6 }}>
+                      By: {selectedComplaint.resolved_by_name || "Admin"} · {selectedComplaint.resolved_at ? new Date(selectedComplaint.resolved_at).toLocaleString() : ""}
+                    </div>
+                    <div style={{ fontSize: 14, color: "#0f2018", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                      {selectedComplaint.admin_response}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Response form */}
+              {selectedComplaint.status !== "closed" && (
+                <>
+                  <h3 style={s.modalSection}>✍️ {selectedComplaint.admin_response ? "Update Response" : "Write Response"}</h3>
+
+                  <textarea
+                    value={responseText}
+                    onChange={(e) => setResponseText(e.target.value)}
+                    placeholder="Apna response yahan likhein... User ko email mein bhi yeh response dikhega."
+                    style={{ width: "100%", border: "1.5px solid #d4eddf", borderRadius: 9, padding: "12px 14px", fontSize: 14, fontFamily: "inherit", color: "#1a2e24", outline: "none", background: "#fafffe", resize: "vertical", boxSizing: "border-box", minHeight: 100 }}
+                    rows={5}
+                  />
+
+                  <div style={{ marginTop: 14 }}>
+                    <label style={{ fontSize: 13, fontWeight: 800, color: "#3d5a48", display: "block", marginBottom: 8 }}>
+                      Mark Status As:
+                    </label>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      {[
+                        { value: "in_progress", label: "⏳ In Progress", color: "#fff8e6", textColor: "#7a5a10" },
+                        { value: "resolved",    label: "✅ Resolved",    color: "#e8f8ef", textColor: "#1a6e3f" },
+                        { value: "closed",      label: "🔒 Closed",      color: "#f3f4f6", textColor: "#374151" },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => setResponseStatus(opt.value)}
+                          style={{
+                            background: responseStatus === opt.value ? opt.color : "rgba(240,250,244,0.4)",
+                            color: responseStatus === opt.value ? opt.textColor : "#5a7a6a",
+                            border: responseStatus === opt.value ? `2px solid ${opt.textColor}` : "1.5px solid #d4eddf",
+                            borderRadius: 9,
+                            padding: "8px 16px",
+                            fontWeight: 800,
+                            fontSize: 13,
+                            cursor: "pointer",
+                            fontFamily: "inherit",
+                          }}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {errorMsg && <div style={s.errorBox}>⚠️ {errorMsg}</div>}
+                </>
+              )}
+
+              {selectedComplaint.status === "closed" && (
+                <div style={{ background: "#f3f4f6", borderRadius: 10, padding: "14px 16px", fontSize: 13, color: "#374151", fontWeight: 700, textAlign: "center" }}>
+                  🔒 This complaint is closed and cannot be updated.
+                </div>
+              )}
+            </div>
+
+            {selectedComplaint.status !== "closed" && (
+              <div style={s.modalActions}>
+                <button style={s.btnOutline} onClick={() => { setSelectedComplaint(null); setResponseText(""); setErrorMsg(""); }}>
+                  Cancel
+                </button>
+                <button
+                  style={{ ...s.btnApprove, opacity: responseText.length >= 5 && !actionLoading ? 1 : 0.5 }}
+                  className={responseText.length >= 5 && !actionLoading ? "bc-btn-glow" : ""}
+                  disabled={responseText.length < 5 || actionLoading}
+                  onClick={handleSubmitResponse}
+                >
+                  {actionLoading ? "Sending..." : `💬 Submit Response (${responseStatus})`}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -887,4 +1278,8 @@ const s = {
   suspendBtn: { background: "#fff8e6", color: "#7a5a10", border: "1.5px solid #fde68a", borderRadius: 6, padding: "5px 10px", fontSize: 11.5, fontWeight: 800, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap", transition: "all 0.2s" },
   activateBtn: { background: "#e8f8ef", color: "#1a6e3f", border: "1.5px solid #b2e0cc", borderRadius: 6, padding: "5px 10px", fontSize: 11.5, fontWeight: 800, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap", transition: "all 0.2s" },
   deleteBtn: { background: "#fee2e2", color: "#991b1b", border: "1.5px solid #fca5a5", borderRadius: 6, padding: "5px 10px", fontSize: 11.5, fontWeight: 800, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap", transition: "all 0.2s" },
+
+  // Complaint filters
+  filterSelect: { background: "rgba(250,255,254,0.7)", border: "1.5px solid #d4eddf", borderRadius: 9, padding: "8px 14px", fontSize: 13, fontWeight: 700, fontFamily: "inherit", color: "#3d5a48", outline: "none", cursor: "pointer" },
+  filterReset: { background: "#fff", color: "#dc2626", border: "1.5px solid #fca5a5", borderRadius: 9, padding: "8px 14px", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" },
 };
