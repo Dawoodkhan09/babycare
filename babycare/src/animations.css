@@ -1,0 +1,217 @@
+/* ════════════════════════════════════════════════════════════════════
+   BabyCare — Shared Animations & Glass Effects
+   ──────────────────────────────────────────────────────────────────
+   Import this in your main App.jsx or index.jsx:
+       import "./animations.css";
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ─── KEYFRAMES ────────────────────────────────────────────────── */
+
+@keyframes bc-fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bc-fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes bc-fadeInLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bc-fadeInRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bc-scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bc-popIn {
+  0%   { opacity: 0; transform: scale(0.7); }
+  60%  { opacity: 1; transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bc-glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(42,157,92,0.45), 0 4px 18px rgba(42,157,92,0.3); }
+  50%      { box-shadow: 0 0 0 8px rgba(42,157,92,0),    0 6px 24px rgba(42,157,92,0.45); }
+}
+
+@keyframes bc-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes bc-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bc-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bc-bgOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(30px, -20px) scale(1.05); }
+  66%      { transform: translate(-20px, 25px) scale(0.95); }
+}
+
+@keyframes bc-checkPop {
+  0%   { transform: scale(0); }
+  60%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+/* ─── ENTRY ANIMATION UTILITIES ───────────────────────────────── */
+
+.bc-anim-fadeUp   { animation: bc-fadeInUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.bc-anim-fadeIn   { animation: bc-fadeIn   0.6s ease-out both; }
+.bc-anim-fadeLeft { animation: bc-fadeInLeft  0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.bc-anim-fadeRight{ animation: bc-fadeInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.bc-anim-scaleIn  { animation: bc-scaleIn  0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.bc-anim-popIn    { animation: bc-popIn    0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Stagger delay helpers — use with bc-anim-* */
+.bc-d1  { animation-delay: 0.05s; }
+.bc-d2  { animation-delay: 0.12s; }
+.bc-d3  { animation-delay: 0.20s; }
+.bc-d4  { animation-delay: 0.28s; }
+.bc-d5  { animation-delay: 0.36s; }
+.bc-d6  { animation-delay: 0.44s; }
+.bc-d7  { animation-delay: 0.52s; }
+.bc-d8  { animation-delay: 0.60s; }
+
+/* ─── GLASS / GLOW UTILITIES ──────────────────────────────────── */
+
+.bc-glass {
+  background: rgba(255,255,255,0.65) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1.5px solid rgba(255,255,255,0.5) !important;
+}
+
+.bc-glass-dark {
+  background: rgba(255,255,255,0.12) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.22) !important;
+}
+
+.bc-glow-on-hover {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.28s ease,
+              border-color 0.28s ease !important;
+}
+
+.bc-glow-on-hover:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 14px 32px rgba(42, 157, 92, 0.18),
+    0 0 0 1px rgba(42, 157, 92, 0.35),
+    0 0 28px rgba(42, 157, 92, 0.22) !important;
+  border-color: rgba(42, 157, 92, 0.45) !important;
+}
+
+.bc-glow-soft {
+  box-shadow:
+    0 4px 18px rgba(42,157,92,0.12),
+    0 0 24px rgba(42,157,92,0.08);
+}
+
+.bc-btn-glow {
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s ease !important;
+}
+
+.bc-btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 24px rgba(42,157,92,0.45),
+    0 0 0 4px rgba(42,157,92,0.15),
+    0 0 30px rgba(42,157,92,0.35) !important;
+  filter: brightness(1.05);
+}
+
+.bc-btn-glow:active {
+  transform: translateY(0);
+}
+
+.bc-btn-outline-glow {
+  transition: all 0.22s ease !important;
+}
+.bc-btn-outline-glow:hover {
+  background: rgba(42,157,92,0.08) !important;
+  box-shadow: 0 0 0 4px rgba(42,157,92,0.12), 0 6px 18px rgba(42,157,92,0.18);
+  transform: translateY(-1px);
+}
+
+/* Glow ring for active/important elements (pulsing) */
+.bc-glow-pulse {
+  animation: bc-glowPulse 2.4s ease-in-out infinite;
+}
+
+.bc-float { animation: bc-float 3.5s ease-in-out infinite; }
+
+/* Shimmer skeleton/loading effect */
+.bc-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(42,157,92,0)   0%,
+    rgba(42,157,92,0.18) 50%,
+    rgba(42,157,92,0)   100%
+  );
+  background-size: 200% 100%;
+  animation: bc-shimmer 2.2s linear infinite;
+}
+
+/* Decorative animated background orbs (use on hero sections) */
+.bc-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+  animation: bc-bgOrb 14s ease-in-out infinite;
+}
+
+/* Tiny check-pop for successful actions */
+.bc-check-pop { animation: bc-checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Spinner */
+.bc-spinner {
+  width: 18px; height: 18px;
+  border: 2.5px solid rgba(42,157,92,0.2);
+  border-top-color: #2a9d5c;
+  border-radius: 50%;
+  animation: bc-spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+/* Input focus glow */
+.bc-input-glow {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+}
+.bc-input-glow:focus {
+  border-color: #2a9d5c !important;
+  box-shadow: 0 0 0 4px rgba(42,157,92,0.15) !important;
+  background: #fff !important;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .bc-anim-fadeUp, .bc-anim-fadeIn, .bc-anim-fadeLeft, .bc-anim-fadeRight,
+  .bc-anim-scaleIn, .bc-anim-popIn, .bc-glow-pulse, .bc-float, .bc-shimmer,
+  .bc-orb, .bc-check-pop {
+    animation: none !important;
+  }
+  .bc-glow-on-hover:hover, .bc-btn-glow:hover, .bc-btn-outline-glow:hover {
+    transform: none !important;
+  }
+}

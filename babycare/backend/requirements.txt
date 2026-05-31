@@ -1,0 +1,24 @@
+# ═══════════════════════════════════════════════════════════
+# BabyCare Backend — Python Dependencies
+# ═══════════════════════════════════════════════════════════
+
+# Core Framework
+Django>=5.1.4
+
+# REST API
+djangorestframework==3.14.0
+
+# Authentication (JWT tokens for React login)
+djangorestframework-simplejwt==5.3.1
+
+# CORS (React frontend se connection allow karne ke liye)
+django-cors-headers==4.3.1
+
+# Image handling (doctor documents, profile photos upload)
+Pillow>=10.4.0
+
+# Environment variables (sensitive data hide karne ke liye)
+python-decouple==3.8
+
+# Email (doctor verification approval emails ke liye — future)
+# Built-in Django ke saath aata hai, alag install nahi karna
