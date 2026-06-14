@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-we0fb6dvn+4s6_=-u(n-ke77!*+t35t-drea7$i2pn$9_sw5ug
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -156,12 +156,13 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
-
+"""
 # ── CORS Settings (React se connection ke liye) ──
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",      # React development server
     "http://127.0.0.1:3000",
-]
+]"""
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 

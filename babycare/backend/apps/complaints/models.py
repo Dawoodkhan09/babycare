@@ -43,14 +43,14 @@ class Complaint(models.Model):
         on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name='complaints_against',
-        help_text='Agar doctor ke against complaint hai',
+        help_text='If there is a complaint against the doctor',
     )
     against_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name='complaints_against_me',
-        help_text='Agar user ke against complaint hai',
+        help_text='If there is a complaint against the user',
     )
 
     # ─── Complaint details ───

@@ -256,7 +256,7 @@ class VerifyOTPView(APIView):
         
         if not otp.is_valid():
             return Response({
-                'detail': 'OTP expire ho gaya hai. Naya OTP request karein.'
+                'detail': 'The OTP has expired. Please request a new OTP.'
             }, status=400)
         
         return Response({
@@ -296,13 +296,13 @@ class ResetPasswordView(APIView):
             ).latest('created_at')
         except PasswordResetOTP.DoesNotExist:
             return Response({
-                'detail': 'Galat OTP code.'
+                'detail': 'Invalid OTP code.'
             }, status=400)
         
         # OTP validity check
         if not otp.is_valid():
             return Response({
-                'detail': 'OTP expire ho gaya hai. Naya OTP request karein.'
+                'detail': 'The OTP has expired. Please request a new OTP.'
             }, status=400)
         
         # Password update karo
@@ -322,10 +322,10 @@ class ResetPasswordView(APIView):
         print(f"")
         print(f"Hello {user.first_name or 'User'},")
         print(f"")
-        print(f"Aap ka password successfully change ho gaya hai.")
-        print(f"Agar yeh aap ne nahi kiya, to fauran admin se contact karein.")
+        print(f"Your password has been successfully changed.")
+        print(f"If you did not perform this action, please contact the admin immediately.")
         print("═" * 60 + "\n")
         
         return Response({
-            'message': 'Password successfully change ho gaya! Ab login karein.',
+            'message': 'Password changed successfully! Please log in now.',
         })

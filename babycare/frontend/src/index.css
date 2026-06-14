@@ -1,0 +1,245 @@
+/* ═══════════════════════════════════════════════════════════
+   BabyCare — Mobile-First Global Styles
+   Add this to src/index.css or import in src/index.js
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Reset / Base ─── */
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html {
+  /* Disable text inflation on mobile rotate */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #fafffe;
+  color: #0a1f15;
+  overflow-x: hidden; /* prevent horizontal scroll on mobile */
+  /* Safe area insets for iPhone notch */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Touch-optimized buttons (min 44x44px hit target — Apple HIG) */
+button,
+[role="button"],
+a {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* ─── Form inputs — prevent iOS zoom on focus ─── */
+input,
+textarea,
+select {
+  font-size: 16px; /* Critical: prevents iOS auto-zoom */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Restore appearance for specific types */
+input[type="checkbox"],
+input[type="radio"] {
+  -webkit-appearance: auto;
+  appearance: auto;
+}
+
+/* ─── Scrollbars (desktop only) ─── */
+@media (min-width: 769px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f0f5f2;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c5d9cd;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a3c4ad;
+  }
+}
+
+/* ─── Selection color ─── */
+::selection {
+  background: #2a9d5c;
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ═══════════════════════════════════════════════════════════ */
+
+/* Mobile (max-width: 640px) */
+@media (max-width: 640px) {
+  /* Hide desktop-only elements */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Full-width modals on mobile */
+  .bc-modal-mobile {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+  }
+
+  /* Reduce horizontal padding on mobile */
+  .bc-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Stack grid items on mobile */
+  .bc-grid-mobile-stack {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Adjust font sizes */
+  h1 { font-size: 22px !important; }
+  h2 { font-size: 18px !important; }
+}
+
+/* Tablet (max-width: 768px) */
+@media (max-width: 768px) {
+  .tablet-hide {
+    display: none !important;
+  }
+}
+
+/* Desktop only */
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PWA-SPECIFIC STYLES
+   ═══════════════════════════════════════════════════════════ */
+
+/* When running as installed PWA */
+@media (display-mode: standalone) {
+  body {
+    /* Add safe area padding for notch */
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  /* Hide install banner when PWA is installed */
+  .pwa-install-banner {
+    display: none !important;
+  }
+
+  /* Hide browser-only nav elements */
+  .browser-only {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ACCESSIBILITY
+   ═══════════════════════════════════════════════════════════ */
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus visible (keyboard users only) */
+*:focus-visible {
+  outline: 2px solid #2a9d5c;
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════ */
+
+.bc-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.bc-safe-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.bc-no-scroll {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+/* Touch-action helpers for swipeable areas */
+.bc-pan-x { touch-action: pan-x; }
+.bc-pan-y { touch-action: pan-y; }
+
+/* Smooth momentum scrolling on iOS */
+.bc-scroll-smooth {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Prevent text selection (for app-like buttons) */
+.bc-no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS (used across pages)
+   ═══════════════════════════════════════════════════════════ */
+
+@keyframes bc-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bc-slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes bc-spin {
+  to { transform: rotate(360deg); }
+}
+
+.bc-anim-fade-in {
+  animation: bc-fade-in 0.3s ease-out;
+}
+
+.bc-anim-slide-up {
+  animation: bc-slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bc-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(42, 157, 92, 0.2);
+  border-top-color: #1a6e3f;
+  border-radius: 50%;
+  animation: bc-spin 0.7s linear infinite;
+}

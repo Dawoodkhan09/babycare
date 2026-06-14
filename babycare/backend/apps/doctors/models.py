@@ -4,14 +4,12 @@ from django.conf import settings
 
 # ═══════════════════════════════════════════════════════════
 # 1. DOCTOR APPLICATION
-# Doctor register karta hai → yahan data jata hai
-# Admin approve kare to phir User account banta hai
+# Doctor submits registration form here.
+# User account is created only after admin approval.
 # ═══════════════════════════════════════════════════════════
 
 class DoctorApplication(models.Model):
-    """
-    Doctor ki application — Pending review tak User account NAHI banta.
-    """
+    """Doctor's application — User account is NOT created until approved."""
 
     class Status(models.TextChoices):
         PENDING  = 'pending',  'Pending Review'
@@ -26,7 +24,7 @@ class DoctorApplication(models.Model):
 
     # ─── Personal Info ───
     full_name = models.CharField(max_length=100)
-    email     = models.EmailField(unique=True, help_text='Credentials yahin bheje jayenge')
+    email     = models.EmailField(unique=True, help_text='Credentials will be sent to this email')
     phone     = models.CharField(max_length=20)
 
     # ─── Professional Info ───
@@ -34,7 +32,32 @@ class DoctorApplication(models.Model):
     specialty         = models.CharField(max_length=30, choices=Specialty.choices)
     experience_years  = models.PositiveIntegerField()
     clinic_address    = models.TextField(blank=True)
-    consultation_fee  = models.PositiveIntegerField(default=1000, help_text='Rs. mein')
+
+    # ─── Location Coordinates (for map integration) ───
+    # max_digits=15 supports browser GPS precision: e.g. 24.86073829471823
+    # decimal_places=10 supports up to 10 digits after decimal point
+    latitude = models.DecimalField(
+        max_digits=15,
+        decimal_places=10,
+        null=True,
+        blank=True,
+        help_text='GPS latitude of clinic location',
+    )
+    longitude = models.DecimalField(
+        max_digits=15,
+        decimal_places=10,
+        null=True,
+        blank=True,
+        help_text='GPS longitude of clinic location',
+    )
+    city = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Karachi',
+        help_text='City name (e.g., Karachi, Lahore)',
+    )
+
+    consultation_fee  = models.PositiveIntegerField(default=1000, help_text='Amount in Rs.')
 
     # ─── Documents (Files) ───
     pmdc_license   = models.FileField(upload_to='doctor_docs/pmdc/')
@@ -73,11 +96,11 @@ class DoctorApplication(models.Model):
 
 # ═══════════════════════════════════════════════════════════
 # 2. DOCTOR PROFILE
-# Approved doctors ki public profile
+# Approved doctors' public profile (created on approval).
 # ═══════════════════════════════════════════════════════════
 
 class DoctorProfile(models.Model):
-    """Approved doctors ki public profile."""
+    """Approved doctors' public profile."""
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -90,6 +113,30 @@ class DoctorProfile(models.Model):
     specialty         = models.CharField(max_length=50)
     experience_years  = models.PositiveIntegerField()
     clinic_address    = models.TextField(blank=True)
+
+    # ─── Location Coordinates (for map integration) ───
+    # max_digits=15 supports browser GPS precision
+    latitude = models.DecimalField(
+        max_digits=15,
+        decimal_places=10,
+        null=True,
+        blank=True,
+        help_text='GPS latitude of clinic location',
+    )
+    longitude = models.DecimalField(
+        max_digits=15,
+        decimal_places=10,
+        null=True,
+        blank=True,
+        help_text='GPS longitude of clinic location',
+    )
+    city = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Karachi',
+        help_text='City name',
+    )
+
     consultation_fee  = models.PositiveIntegerField(default=1000)
     profile_photo     = models.ImageField(upload_to='doctor_profiles/', blank=True, null=True)
     bio               = models.TextField(blank=True)

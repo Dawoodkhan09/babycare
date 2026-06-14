@@ -86,11 +86,11 @@ class DoctorApplicationAdmin(admin.ModelAdmin):
 
     def _approve_doctor(self, request, app):
         if app.linked_user:
-            messages.error(request, f'⚠️ "{app.full_name}" pehle se approved hai!')
+            messages.error(request, f'⚠️ "{app.full_name}" Already approved!')
             return
 
         if User.objects.filter(email=app.email).exists():
-            messages.error(request, f'❌ Email "{app.email}" pehle se exist karta hai.')
+            messages.error(request, f'❌ Email "{app.email}"Already exists.')
             app.status = 'pending'
             return
 

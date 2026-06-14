@@ -22,7 +22,7 @@ from apps.accounts.models import User
 # ═══════════════════════════════════════════════════════════
 
 class IsAdminUser(permissions.BasePermission):
-    """Sirf admin role wale users iss API ko access kar sakte hain"""
+    """Only users with the admin role can access this API."""
 
     def has_permission(self, request, view):
         return (
@@ -48,13 +48,12 @@ def generate_random_password(length=12):
 
 class DoctorApplicationSubmitView(generics.CreateAPIView):
     """
-    Doctor apni registration submit karta hai.
-    Koi authentication nahi chahiye.
+    Doctor submits their registration. No authentication required.
     """
     queryset = DoctorApplication.objects.all()
     serializer_class = DoctorApplicationSubmitSerializer
     permission_classes = [permissions.AllowAny]
-    parser_classes = [MultiPartParser, FormParser]    # File upload ke liye
+    parser_classes = [MultiPartParser, FormParser]    # For file uploads
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -62,7 +61,7 @@ class DoctorApplicationSubmitView(generics.CreateAPIView):
         application = serializer.save()
 
         return Response({
-            'message': 'Application submitted successfully! Admin verification ke baad credentials email pe milenge.',
+            'message': 'Application submitted successfully! You will receive your login credentials via email after admin verification.',
             'application_id': application.id,
             'status': application.status,
             'email': application.email,
@@ -114,11 +113,11 @@ class AdminApproveApplicationView(APIView):
 
         # Already approved?
         if app.status == 'approved' or app.linked_user:
-            return Response({'detail': 'Yeh application pehle se approved hai.'}, status=400)
+            return Response({'detail': 'This application has already been approved.'}, status=400)
 
         # Email already exists in User table?
         if User.objects.filter(email=app.email).exists():
-            return Response({'detail': f'Email "{app.email}" pehle se registered hai.'}, status=400)
+            return Response({'detail': f'Email "{app.email}" is already registered.'}, status=400)
 
         # Generate password
         password = generate_random_password(12)
@@ -134,7 +133,7 @@ class AdminApproveApplicationView(APIView):
             is_verified=True,
         )
 
-        # Create doctor profile
+        # Create doctor profile — ✅ BUG FIX: now transfers location fields
         DoctorProfile.objects.create(
             user=user,
             full_name=app.full_name,
@@ -144,6 +143,9 @@ class AdminApproveApplicationView(APIView):
             clinic_address=app.clinic_address,
             consultation_fee=app.consultation_fee,
             profile_photo=app.profile_photo,
+            latitude=app.latitude,          # ✅ ADDED — for map integration
+            longitude=app.longitude,        # ✅ ADDED — for map integration
+            city=app.city,                  # ✅ ADDED — for map integration
         )
 
         # Update application
@@ -153,9 +155,9 @@ class AdminApproveApplicationView(APIView):
         app.reviewed_at = timezone.now()
         app.save()
 
-        # Pretend email — CMD pe print
+        # Simulated email — printed to console
         print("\n" + "═" * 60)
-        print("📧 PRETEND EMAIL — DOCTOR APPROVED")
+        print("📧 SIMULATED EMAIL — DOCTOR APPROVED")
         print("═" * 60)
         print(f"To:       {app.email}")
         print(f"Subject:  Your BabyCare Doctor Account is Ready! 🎉")
@@ -191,7 +193,7 @@ class AdminRejectApplicationView(APIView):
             return Response({'detail': 'Application not found'}, status=404)
 
         if app.status != 'pending':
-            return Response({'detail': 'Sirf pending applications reject ho sakti hain.'}, status=400)
+            return Response({'detail': 'Only pending applications can be rejected.'}, status=400)
 
         serializer = RejectApplicationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -201,9 +203,9 @@ class AdminRejectApplicationView(APIView):
         app.reviewed_at = timezone.now()
         app.save()
 
-        # Pretend email
+        # Simulated email
         print("\n" + "═" * 60)
-        print(f"📧 PRETEND EMAIL — APPLICATION REJECTED")
+        print(f"📧 SIMULATED EMAIL — APPLICATION REJECTED")
         print(f"To: {app.email}")
         print(f"Reason: {app.rejection_reason}")
         print("═" * 60 + "\n")
@@ -226,7 +228,7 @@ class AdminDoctorListView(generics.ListAPIView):
 
 
 # ═══════════════════════════════════════════════════════════
-# 7. ADMIN — STATS (Dashboard ke liye)
+# 7. ADMIN — STATS (for dashboard)
 # GET /api/doctors/admin/stats/
 # ═══════════════════════════════════════════════════════════
 
@@ -251,7 +253,7 @@ class AdminStatsView(APIView):
 
 
 # ═══════════════════════════════════════════════════════════
-# 8. CHECK APPLICATION STATUS (Public — for doctor to check)
+# 8. CHECK APPLICATION STATUS (Public — doctor can check their status)
 # GET /api/doctors/check-status/?email=...
 # ═══════════════════════════════════════════════════════════
 
@@ -261,12 +263,12 @@ class CheckApplicationStatusView(APIView):
     def get(self, request):
         email = request.query_params.get('email')
         if not email:
-            return Response({'detail': 'Email zaroori hai'}, status=400)
+            return Response({'detail': 'Email is required.'}, status=400)
 
         try:
             app = DoctorApplication.objects.get(email=email)
         except DoctorApplication.DoesNotExist:
-            return Response({'detail': 'Iss email se koi application nahi mili'}, status=404)
+            return Response({'detail': 'No application found for this email.'}, status=404)
 
         return Response({
             'full_name': app.full_name,
@@ -277,10 +279,10 @@ class CheckApplicationStatusView(APIView):
             'reviewed_at': app.reviewed_at,
             'rejection_reason': app.rejection_reason if app.status == 'rejected' else None,
         })
-    
+
 
 # ═══════════════════════════════════════════════════════════
-# ADMIN — Suspend/Activate Doctor
+# ADMIN — Suspend / Activate Doctor
 # POST /api/doctors/admin/doctors/{id}/toggle-active/
 # ═══════════════════════════════════════════════════════════
 
@@ -322,13 +324,13 @@ class AdminDeleteDoctorView(APIView):
         doctor_name = profile.full_name
         user = profile.user
 
-        # User delete karne se profile aur appointments bhi cascade delete honge
+        # Deleting the user will cascade delete the profile and related appointments
         user.delete()
 
         return Response({
             'message': f'Doctor {doctor_name} permanently deleted.',
         }, status=200)
-    
+
 
 # ═══════════════════════════════════════════════════════════
 # DOCTOR — Get My Own Profile
@@ -336,7 +338,7 @@ class AdminDeleteDoctorView(APIView):
 # ═══════════════════════════════════════════════════════════
 
 class MyDoctorProfileView(generics.RetrieveAPIView):
-    """Logged-in doctor apni profile dekhe"""
+    """Logged-in doctor can view their own profile."""
     serializer_class = DoctorProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -349,6 +351,6 @@ class MyDoctorProfileView(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         profile = self.get_object()
         if not profile:
-            return Response({'detail': 'Aap doctor nahi hain.'}, status=404)
+            return Response({'detail': 'You are not a doctor.'}, status=404)
         serializer = self.get_serializer(profile)
         return Response(serializer.data)

@@ -18,7 +18,7 @@ class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         """Normal user create karne ke liye"""
         if not email:
-            raise ValueError('Email zaroori hai')
+            raise ValueError('Email is required.')
         
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
@@ -69,7 +69,7 @@ class User(AbstractUser):
     # ─── Verification Status ───
     is_verified = models.BooleanField(
         default=True,
-        help_text='Parents ke liye True default. Doctors ke liye admin verification ke baad True.'
+        help_text='For parents, it should be set to True by default. For doctors, it should change to True only after admin verification.'
     )
     
     # ─── Timestamps ───

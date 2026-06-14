@@ -5,12 +5,14 @@ from apps.doctors.models import DoctorProfile
 
 # ═══════════════════════════════════════════════════════════
 # Public Doctor List (Approved doctors — for booking page)
+# Distance calculation removed — replaced with map integration on frontend.
+# Latitude/longitude are returned so the map can plot doctor locations.
 # ═══════════════════════════════════════════════════════════
 
 class PublicDoctorSerializer(serializers.ModelSerializer):
-    """Approved doctors jo users ko dikhenge booking page pe"""
+    """Approved doctors displayed to users on the booking page."""
 
-    profile_photo_url = serializers.SerializerMethodField() 
+    profile_photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = DoctorProfile
@@ -20,9 +22,12 @@ class PublicDoctorSerializer(serializers.ModelSerializer):
             'rating', 'total_reviews', 'total_patients',
             'is_available',
             'profile_photo_url',
+            'latitude',
+            'longitude',
+            'city',
         )
 
-    def get_profile_photo_url(self, obj):                         # ⬅️ ADD METHOD
+    def get_profile_photo_url(self, obj):
         if obj.profile_photo:
             request = self.context.get('request')
             if request:
@@ -71,7 +76,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'doctor', 'doctor_name', 'doctor_specialty', 'doctor_fee',
-            'doctor_photo_url', 
+            'doctor_photo_url',
             'patient', 'patient_name', 'patient_email',
             'baby_name', 'baby_age', 'symptom', 'notes',
             'appointment_date', 'time_slot', 'contact_phone',
@@ -82,8 +87,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
     def get_patient_name(self, obj):
         name = f"{obj.patient.first_name} {obj.patient.last_name}".strip()
         return name or obj.patient.email.split('@')[0]
-    
-    def get_doctor_photo_url(self, obj):                          # ⬅️ ADD METHOD
+
+    def get_doctor_photo_url(self, obj):
         if obj.doctor.profile_photo:
             request = self.context.get('request')
             if request:

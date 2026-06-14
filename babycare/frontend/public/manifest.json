@@ -1,0 +1,68 @@
+{
+  "short_name": "BabyCare",
+  "name": "BabyCare - Pakistani Baby Healthcare",
+  "description": "Verified Pakistani pediatric doctors, online appointments, symptom checker, and homeopathic medicine — all in one app.",
+  "icons": [
+    {
+      "src": "favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": ".",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1a6e3f",
+  "background_color": "#fafffe",
+  "categories": ["health", "medical", "lifestyle"],
+  "lang": "en-PK",
+  "dir": "ltr",
+  "shortcuts": [
+    {
+      "name": "Book a Doctor",
+      "short_name": "Book",
+      "description": "Book an appointment with a verified doctor",
+      "url": "/DoctorBooking",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Symptom Checker",
+      "short_name": "Symptoms",
+      "description": "Check your baby's symptoms",
+      "url": "/Symptomchecker",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Appointments",
+      "short_name": "Dashboard",
+      "description": "View your appointments",
+      "url": "/UserDashboard",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "prefer_related_applications": false
+}

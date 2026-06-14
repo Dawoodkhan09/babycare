@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
+
+    <!-- ═══════════════ PWA META TAGS ═══════════════ -->
+    <meta name="theme-color" content="#1a6e3f" />
+    <meta name="description" content="BabyCare - Pakistani baby healthcare app. Verified pediatric doctors, online appointments, symptom checker, and homeopathic medicine." />
+    <meta name="application-name" content="BabyCare" />
+
+    <!-- iOS PWA Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="BabyCare" />
+
+    <!-- Android PWA Tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#1a6e3f" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- Disable pinch-zoom for app-like feel (optional) -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+    <!-- ═══════════════ ICONS ═══════════════ -->
+    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="%PUBLIC_URL%/favicon-64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="%PUBLIC_URL%/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="%PUBLIC_URL%/icon-512.png" />
+
+    <!-- ═══════════════ PWA MANIFEST ═══════════════ -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- ═══════════════ FONTS ═══════════════ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <title>BabyCare — Pakistani Baby Healthcare</title>
+
+    <!-- Splash screen color (loading state before React mounts) -->
+    <style>
+      html, body { margin: 0; padding: 0; background: #fafffe; }
+      #root { min-height: 100vh; }
+      .pwa-splash {
+        position: fixed; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, #2a9d5c 0%, #1a6e3f 100%);
+        z-index: 9999;
+      }
+      .pwa-splash-content {
+        text-align: center; color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+      .pwa-splash-icon {
+        width: 80px; height: 80px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center; justify-content: center;
+        margin-bottom: 16px;
+        font-size: 36px;
+      }
+      .pwa-splash-title {
+        font-size: 24px; font-weight: 800;
+        margin: 0 0 6px; letter-spacing: -0.5px;
+      }
+      .pwa-splash-sub {
+        font-size: 13px; opacity: 0.9;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>
+      You need to enable JavaScript to run BabyCare.
+    </noscript>
+
+    <!-- Initial splash (hidden once React loads) -->
+    <div id="initial-splash" class="pwa-splash">
+      <div class="pwa-splash-content">
+        <div class="pwa-splash-icon">🩺</div>
+        <div class="pwa-splash-title">BabyCare</div>
+        <div class="pwa-splash-sub">Loading...</div>
+      </div>
+    </div>
+
+    <div id="root"></div>
+
+    <script>
+      // Hide splash once React mounts
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          var splash = document.getElementById('initial-splash');
+          if (splash) {
+            splash.style.transition = 'opacity 0.3s';
+            splash.style.opacity = '0';
+            setTimeout(function() { splash.remove(); }, 300);
+          }
+        }, 400);
+      });
+    </script>
+  </body>
+</html>

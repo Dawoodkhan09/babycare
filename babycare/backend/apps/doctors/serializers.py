@@ -4,14 +4,11 @@ from .models import DoctorApplication, DoctorProfile
 
 # ═══════════════════════════════════════════════════════════
 # Doctor Application Submit Serializer
-# Doctor jab registration form fill kare
+# Used when a doctor fills out the registration form.
 # ═══════════════════════════════════════════════════════════
 
 class DoctorApplicationSubmitSerializer(serializers.ModelSerializer):
-    """
-    Doctor signup form ka serializer.
-    File uploads handle karta hai.
-    """
+    """Handles doctor signup form submission including file uploads and map location."""
 
     class Meta:
         model = DoctorApplication
@@ -20,26 +17,26 @@ class DoctorApplicationSubmitSerializer(serializers.ModelSerializer):
             'pmdc_number', 'specialty', 'experience_years',
             'clinic_address', 'consultation_fee',
             'pmdc_license', 'cnic_front', 'cnic_back', 'degree', 'profile_photo',
+            'latitude', 'longitude', 'city',
         )
 
     def validate_email(self, value):
-        # Check if email already exists in applications
         if DoctorApplication.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Iss email se pehle hi application submitted hai.")
+            raise serializers.ValidationError("Application already submitted for this email.")
         return value
 
     def validate_pmdc_number(self, value):
         if DoctorApplication.objects.filter(pmdc_number=value).exists():
-            raise serializers.ValidationError("Yeh PMDC number pehle se registered hai.")
+            raise serializers.ValidationError("This PMDC number is already registered.")
         return value
 
 
 # ═══════════════════════════════════════════════════════════
-# Doctor Application List/Detail (Admin ke liye)
+# Doctor Application List / Detail (Admin Panel)
 # ═══════════════════════════════════════════════════════════
 
 class DoctorApplicationListSerializer(serializers.ModelSerializer):
-    """List view ke liye — admin dashboard ke applications table mein"""
+    """List view used in the admin dashboard applications table."""
 
     specialty_display = serializers.CharField(source='get_specialty_display', read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
@@ -56,12 +53,11 @@ class DoctorApplicationListSerializer(serializers.ModelSerializer):
 
 
 class DoctorApplicationDetailSerializer(serializers.ModelSerializer):
-    """Detail view — sab info aur documents ke saath"""
+    """Detail view with all information and uploaded documents."""
 
     specialty_display = serializers.CharField(source='get_specialty_display', read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
 
-    # Full URLs for documents
     pmdc_license_url  = serializers.SerializerMethodField()
     cnic_front_url    = serializers.SerializerMethodField()
     cnic_back_url     = serializers.SerializerMethodField()
@@ -79,6 +75,7 @@ class DoctorApplicationDetailSerializer(serializers.ModelSerializer):
             'status', 'status_display', 'rejection_reason',
             'generated_password',
             'submitted_at', 'reviewed_at',
+            'latitude', 'longitude', 'city',
         )
 
     def _build_url(self, file_field):
@@ -101,33 +98,36 @@ class DoctorApplicationDetailSerializer(serializers.ModelSerializer):
 # ═══════════════════════════════════════════════════════════
 
 class RejectApplicationSerializer(serializers.Serializer):
-    """Application reject karne ke liye reason chahiye"""
+    """A reason is required when rejecting an application."""
     rejection_reason = serializers.CharField(required=True, min_length=10)
 
 
 # ═══════════════════════════════════════════════════════════
 # Doctor Profile Serializer
-# Approved doctors list ke liye
+# Used for the approved doctors list.
 # ═══════════════════════════════════════════════════════════
 
 class DoctorProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email', read_only=True)
     phone = serializers.CharField(source='user.phone', read_only=True)
     is_active = serializers.BooleanField(source='user.is_active', read_only=True)
-    profile_photo_url = serializers.SerializerMethodField() 
+    profile_photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = DoctorProfile
         fields = (
             'id', 'full_name', 'email', 'phone',
             'pmdc_number', 'specialty', 'experience_years',
-            'clinic_address', 'consultation_fee',
+            'consultation_fee',
             'rating', 'total_reviews', 'total_patients',
             'is_available', 'is_active', 'created_at',
-            'profile_photo_url', 
+            'profile_photo_url', 'clinic_address',
+            'latitude',
+            'longitude',
+            'city',
         )
 
-    def get_profile_photo_url(self, obj):                         # ⬅️ ADD
+    def get_profile_photo_url(self, obj):
         if obj.profile_photo:
             request = self.context.get('request')
             if request:

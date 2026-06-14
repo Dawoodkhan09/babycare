@@ -102,19 +102,19 @@ class LoginSerializer(serializers.Serializer):
         # Agar credentials galat hain
         if not user:
             raise serializers.ValidationError({
-                'detail': 'Galat email ya password. Dobara try karein.'
+                'detail': 'Invalid email or password. Try again.'
             })
         
         # Agar account inactive hai
         if not user.is_active:
             raise serializers.ValidationError({
-                'detail': 'Aap ka account abhi inactive hai. Admin se contact karein.'
+                'detail': 'Your account is currently inactive. Please contact the admin.'
             })
         
         # Agar doctor hai aur verify nahi hua
         if user.is_doctor_user and not user.is_verified:
             raise serializers.ValidationError({
-                'detail': 'Aap ki doctor verification abhi pending hai.'
+                'detail': 'Your doctor verification is currently pending.'
             })
         
         # Sab sahi hai — user ko attrs mein add kar do
