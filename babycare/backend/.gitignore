@@ -1,0 +1,22 @@
+# Environment
+.env
+.env.local
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+
+# Media uploads
+media/
+
+# Static collected
+staticfiles/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/

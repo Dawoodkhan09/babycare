@@ -22,3 +22,16 @@ python-decouple==3.8
 
 # Email (doctor verification approval emails ke liye — future)
 # Built-in Django ke saath aata hai, alag install nahi karna
+
+# Production server
+gunicorn==21.2.0
+
+# Static files for production
+whitenoise==6.6.0
+
+# PostgreSQL support
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Environment variables
+python-decouple==3.8
