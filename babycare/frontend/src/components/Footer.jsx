@@ -105,6 +105,16 @@ const hoverStyles = `
   .footer-trust-item svg {
     transition: transform 0.25s ease;
   }
+
+  @media (max-width: 768px) {
+    .footer-cta-band { padding: 20px 16px !important; }
+    .footer-cta-inner { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+    .footer-cta-btn { width: 100% !important; justify-content: center !important; }
+    .footer-main-inner { padding: 32px 16px 20px !important; }
+    .footer-top-row { grid-template-columns: 1fr !important; gap: 28px !important; }
+    .footer-trust-strip { gap: 12px !important; flex-wrap: wrap !important; justify-content: flex-start !important; }
+    .footer-bottom-row { flex-direction: column !important; gap: 6px !important; }
+  }
 `;
 
 export default function Footer() {
@@ -116,8 +126,8 @@ export default function Footer() {
 
       <footer style={s.footer}>
         {/* ═══════════════ CTA BAND ═══════════════ */}
-        <div style={s.ctaBand}>
-          <div style={s.ctaInner}>
+        <div style={s.ctaBand} className="footer-cta-band">
+          <div style={s.ctaInner} className="footer-cta-inner">
             <div style={s.ctaText}>
               <h3 style={s.ctaTitle}>
                 Need expert pediatric advice?
@@ -134,10 +144,10 @@ export default function Footer() {
         </div>
 
         {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-        <div style={s.inner}>
+        <div style={s.inner} className="footer-main-inner">
 
           {/* TOP ROW */}
-          <div style={s.topRow}>
+          <div style={s.topRow} className="footer-top-row">
             {/* Brand */}
             <div style={s.brandCol}>
               <div style={s.logo} className="footer-logo" onClick={() => navigate("/")}>
@@ -269,7 +279,7 @@ export default function Footer() {
           </div>
 
           {/* TRUST INDICATORS */}
-          <div style={s.trustStrip}>
+          <div style={s.trustStrip} className="footer-trust-strip">
             <div style={s.trustItem} className="footer-trust-item">
               <FaShieldAlt size={12} color="#5fcf8f" />
               <span>HIPAA Compliant</span>
@@ -292,7 +302,7 @@ export default function Footer() {
           </div>
 
           {/* BOTTOM ROW */}
-          <div style={s.bottom}>
+          <div style={s.bottom} className="footer-bottom-row">
             <div style={s.bottomLeft}>
               © 2026 BabyCare. All rights reserved.
             </div>
