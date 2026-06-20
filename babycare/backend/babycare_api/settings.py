@@ -157,13 +157,19 @@ SIMPLE_JWT = {
 }
 
 # ── CORS Settings (Smart — open in dev, locked in production) ──
+# ── CORS Settings ──
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000',
+    default='http://localhost:3000',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
-# Development mein sab allow, production mein sirf specific URLs
+# Vercel ki saari deployment URLs automatically allow honi
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://babycare.*\.vercel\.app$",
+]
+
+# Development mein sab allow, production mein regex se check
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
