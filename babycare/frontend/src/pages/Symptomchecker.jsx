@@ -110,6 +110,39 @@ const hoverStyles = `
   .sym-back-link:hover {
     color: #1a6e3f !important;
   }
+
+  /* ═══════════════ MOBILE RESPONSIVE ═══════════════ */
+  @media (max-width: 768px) {
+    .sym-container { padding: 28px 14px 90px !important; }
+
+    /* Progress bar compress */
+    .sym-prog-line { width: 36px !important; margin: 0 4px !important; }
+    .sym-prog-label { font-size: 10px !important; }
+
+    /* Symptom grid: 3 columns on tablet, 2 on phone */
+    .sym-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+    .sym-card { padding: 12px 6px 10px !important; }
+    .sym-icon-box { width: 38px !important; height: 38px !important; }
+    .sym-label { font-size: 11.5px !important; }
+    .sym-desc { display: none !important; }
+
+    /* CTA button full width */
+    .sym-action-wrap { width: 100%; }
+    .sym-btn-primary { width: 100%; justify-content: center; }
+
+    /* Step 2 card */
+    .sym-detail-card { padding: 20px 16px 18px !important; }
+
+    /* Step 2 button row stack */
+    .sym-btn-row { flex-direction: column !important; }
+    .sym-btn-row .sym-btn-outline,
+    .sym-btn-row .sym-btn-primary { width: 100% !important; justify-content: center !important; }
+  }
+
+  @media (max-width: 480px) {
+    .sym-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .sym-prog-line { width: 24px !important; }
+  }
 `;
 
 export default function SymptomChecker() {
@@ -130,7 +163,7 @@ export default function SymptomChecker() {
     <div style={s.root}>
       <style>{hoverStyles}</style>
 
-      <div style={s.container}>
+      <div style={s.container} className="sym-container">
 
         {/* ═══ HEADER ═══ */}
         <div style={s.header}>
@@ -149,7 +182,7 @@ export default function SymptomChecker() {
         </div>
 
         {/* ═══ PROGRESS ═══ */}
-        <div style={s.progress}>
+        <div style={s.progress} className="sym-progress">
           {["Select Symptoms", "Baby Details", "Get Results"].map((label, i) => {
             const num = i + 1;
             const done = step > num;
@@ -167,7 +200,7 @@ export default function SymptomChecker() {
                   >
                     {done ? <FaCheck size={12} /> : num}
                   </div>
-                  <span style={{
+                  <span className="sym-prog-label" style={{
                     ...s.progLabel,
                     color: active ? MINT_DARK : done ? MINT_DARK : TEXT_MUTED,
                     fontWeight: active ? 800 : 700,
@@ -176,7 +209,7 @@ export default function SymptomChecker() {
                   </span>
                 </div>
                 {i < 2 && (
-                  <div style={{ ...s.progLine, background: step > num ? MINT_DARK : BORDER }} />
+                  <div className="sym-prog-line" style={{ ...s.progLine, background: step > num ? MINT_DARK : BORDER }} />
                 )}
               </div>
             );
@@ -186,7 +219,7 @@ export default function SymptomChecker() {
         {/* ═══ STEP 1: SYMPTOMS ═══ */}
         {step === 1 && (
           <>
-            <div style={s.symGrid}>
+            <div style={s.symGrid} className="sym-grid">
               {SYMPTOMS.map(({ id, Icon, label, desc, color }) => {
                 const active = selected.includes(id);
                 return (
@@ -250,7 +283,7 @@ export default function SymptomChecker() {
             )}
 
             {/* Action */}
-            <div style={s.actionWrap}>
+            <div style={s.actionWrap} className="sym-action-wrap">
               {!canNext && (
                 <div style={s.helperBox}>
                   <FaInfoCircle size={13} color={TEXT_MUTED} />
@@ -272,7 +305,7 @@ export default function SymptomChecker() {
 
         {/* ═══ STEP 2: DETAILS ═══ */}
         {step === 2 && (
-          <div style={s.detailCard}>
+          <div style={s.detailCard} className="sym-detail-card">
             <div style={s.detailHeader}>
               <button style={s.backLink} className="sym-back-link" onClick={() => setStep(1)}>
                 <FaArrowLeft size={11} />
@@ -345,7 +378,7 @@ export default function SymptomChecker() {
             </div>
 
             {/* Action buttons */}
-            <div style={s.btnRow}>
+            <div style={s.btnRow} className="sym-btn-row">
               <button style={s.btnOutline} className="sym-btn-outline" onClick={() => setStep(1)}>
                 <FaArrowLeft size={11} />
                 Back

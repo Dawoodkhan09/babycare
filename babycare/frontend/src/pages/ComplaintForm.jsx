@@ -74,6 +74,17 @@ const hoverStyles = `
     100% { transform: scale(1); opacity: 1; }
   }
   .cf-pop { animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+  /* ═══════════════ MOBILE RESPONSIVE ═══════════════ */
+  @media (max-width: 768px) {
+    .cf-container { padding: 20px 14px 90px !important; }
+    .cf-form-card { padding: 20px 16px 18px !important; border-radius: 16px !important; }
+    .cf-priority-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .cf-btn-row { flex-direction: column !important; }
+    .cf-btn-row .cf-btn-outline,
+    .cf-btn-row .cf-btn-primary { width: 100% !important; justify-content: center !important; min-height: 48px; }
+    .cf-input, .cf-select, .cf-textarea { font-size: 16px !important; }
+  }
 `;
 
 export default function ComplaintForm() {
@@ -213,7 +224,7 @@ export default function ComplaintForm() {
     <div style={s.root}>
       <style>{hoverStyles}</style>
 
-      <div style={s.container}>
+      <div style={s.container} className="cf-container">
         {/* HEADER */}
         <button style={s.backBtn} className="cf-btn-outline" onClick={() => navigate(-1)}>
           <FaArrowLeft size={11} />
@@ -232,7 +243,7 @@ export default function ComplaintForm() {
         </div>
 
         {/* CARD */}
-        <div style={s.formCard}>
+        <div style={s.formCard} className="cf-form-card">
 
           {/* Category */}
           <h2 style={s.sectionTitle}>
@@ -315,7 +326,7 @@ export default function ComplaintForm() {
             Priority Level <span style={s.required}>*</span>
           </label>
 
-          <div style={s.priorityGrid}>
+          <div style={s.priorityGrid} className="cf-priority-grid">
             {priorities.map((p) => {
               const isActive = form.priority === p.value;
               const colors = PRIORITY_COLORS[p.value] || PRIORITY_COLORS.medium;
@@ -410,7 +421,7 @@ export default function ComplaintForm() {
           </div>
 
           {/* Submit Buttons */}
-          <div style={s.btnRow}>
+          <div style={s.btnRow} className="cf-btn-row">
             <button style={s.btnOutline} className="cf-btn-outline" onClick={() => navigate(-1)}>
               Cancel
             </button>

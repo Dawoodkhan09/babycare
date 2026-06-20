@@ -114,6 +114,28 @@ const hoverStyles = `
     .db-doc-grid {
       grid-template-columns: 1fr !important;
     }
+    .db-container {
+      padding: 20px 14px 20px !important;
+    }
+    .db-filter-row {
+      overflow-x: auto;
+      flex-wrap: nowrap !important;
+      padding-bottom: 4px;
+    }
+    .db-filter-row::-webkit-scrollbar { display: none; }
+    .db-filter-pill {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+    .db-slots-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+    .db-slot-btn {
+      padding: 10px 8px !important;
+      font-size: 12px !important;
+      justify-content: center !important;
+    }
   }
 `;
 
@@ -243,7 +265,7 @@ export default function DoctorBooking() {
     <div style={s.root}>
       <style>{hoverStyles}</style>
 
-      <div style={s.container}>
+      <div style={s.container} className="db-container">
 
         {/* ═══════════════ SUCCESS SCREEN ═══════════════ */}
         {step === "success" && (
@@ -345,7 +367,7 @@ export default function DoctorBooking() {
               </div>
             ) : (
               <>
-                <div style={s.slotsGrid}>
+                <div style={s.slotsGrid} className="db-slots-grid">
                   {allSlots.map((slot) => {
                     const isBooked = bookedSlots.includes(slot);
                     const isSelected = selSlot === slot;
@@ -454,13 +476,13 @@ export default function DoctorBooking() {
             ) : (
               <>
                 {/* Specialty Filter */}
-                <div style={s.filterRow}>
-                  <FaFilter size={12} color={TEXT_MUTED} />
+                <div style={s.filterRow} className="db-filter-row">
+                  <FaFilter size={12} color={TEXT_MUTED} style={{ flexShrink: 0 }} />
                   {specialties.map((f) => (
                     <button
                       key={f}
                       onClick={() => setFilter(f)}
-                      className={`db-pill ${filter === f ? "active" : ""}`}
+                      className={`db-pill db-filter-pill ${filter === f ? "active" : ""}`}
                       style={{ ...s.filterPill, ...(filter === f ? s.filterActive : {}) }}
                     >
                       {f}

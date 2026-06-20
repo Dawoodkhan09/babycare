@@ -70,6 +70,32 @@ const hoverStyles = `
     to { opacity: 1; transform: scale(1); }
   }
   .mc-modal { animation: modal-in 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+
+  /* ═══════════════ MOBILE RESPONSIVE ═══════════════ */
+  @media (max-width: 768px) {
+    .mc-container { padding: 20px 14px 90px !important; }
+    .mc-header { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+    .mc-header-btn { width: 100%; justify-content: center; }
+    .mc-filter-row { overflow-x: auto; flex-wrap: nowrap !important; padding-bottom: 4px; }
+    .mc-filter-row::-webkit-scrollbar { display: none; }
+    .mc-filter { flex-shrink: 0; white-space: nowrap; }
+    .mc-card { padding: 14px 16px !important; }
+    .mc-card-top { flex-wrap: wrap !important; gap: 8px !important; }
+    .mc-card-footer { flex-direction: column !important; gap: 8px !important; }
+    .mc-view-btn { width: 100%; justify-content: center; }
+
+    /* Modal full-screen on mobile */
+    .mc-modal-box {
+      max-width: 100vw !important;
+      width: 100vw !important;
+      max-height: 100vh !important;
+      height: 100vh !important;
+      border-radius: 0 !important;
+    }
+    .mc-modal-header { padding: 14px 16px !important; }
+    .mc-modal-body { padding: 16px !important; }
+    .mc-detail-grid { grid-template-columns: 1fr !important; }
+  }
 `;
 
 export default function MyComplaints() {
@@ -118,9 +144,9 @@ export default function MyComplaints() {
     <div style={s.root}>
       <style>{hoverStyles}</style>
 
-      <div style={s.container}>
+      <div style={s.container} className="mc-container">
         {/* HEADER */}
-        <div style={s.header}>
+        <div style={s.header} className="mc-header">
           <div>
             <div style={s.badge}>
               <FaListAlt size={11} color={MINT_DARK} />
@@ -130,7 +156,7 @@ export default function MyComplaints() {
             <p style={s.pageSub}>Apni submitted complaints aur unke responses dekhe</p>
           </div>
 
-          <button style={s.btnPrimary} className="mc-btn-primary" onClick={() => navigate("/file-complaint")}>
+          <button style={s.btnPrimary} className="mc-btn-primary mc-header-btn" onClick={() => navigate("/file-complaint")}>
             <FaPlus size={11} />
             File New Complaint
           </button>
@@ -154,7 +180,7 @@ export default function MyComplaints() {
         )}
 
         {/* FILTER */}
-        <div style={s.filterRow}>
+        <div style={s.filterRow} className="mc-filter-row">
           {[
             { key: "all", label: "All" },
             { key: "open", label: "Open" },
@@ -208,7 +234,7 @@ export default function MyComplaints() {
           <div style={s.cardsGrid}>
             {filtered.map((c) => (
               <div key={c.id} style={s.complaintCard} className="mc-card">
-                <div style={s.cardTop}>
+                <div style={s.cardTop} className="mc-card-top">
                   <div style={s.complaintId}>#{c.id}</div>
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                     <span style={{ ...s.badge2, ...PRIORITY_COLORS[c.priority] }}>{c.priority_display}</span>
@@ -237,7 +263,7 @@ export default function MyComplaints() {
                   )}
                 </div>
 
-                <div style={s.cardFooter}>
+                <div style={s.cardFooter} className="mc-card-footer">
                   <div style={s.cardDate}>
                     <FaCalendarAlt size={10} color={TEXT_MUTED} />
                     {new Date(c.created_at).toLocaleDateString()}
@@ -256,8 +282,8 @@ export default function MyComplaints() {
       {/* DETAIL MODAL */}
       {selectedComplaint && (
         <div style={s.modalOverlay} onClick={(e) => { if (e.target === e.currentTarget) setSelectedComplaint(null); }}>
-          <div style={s.modal} className="mc-modal">
-            <div style={s.modalHeader}>
+          <div style={s.modal} className="mc-modal mc-modal-box">
+            <div style={s.modalHeader} className="mc-modal-header">
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={s.modalIdBadge}>Complaint #{selectedComplaint.id}</div>
                 <h2 style={s.modalTitle}>{selectedComplaint.subject}</h2>
@@ -267,9 +293,9 @@ export default function MyComplaints() {
               </button>
             </div>
 
-            <div style={s.modalBody}>
+            <div style={s.modalBody} className="mc-modal-body">
               {/* Metadata Grid */}
-              <div style={s.metaGrid}>
+              <div style={s.metaGrid} className="mc-detail-grid">
                 <DetailItem label="Category" value={selectedComplaint.category_display} />
                 <DetailItem
                   label="Priority"

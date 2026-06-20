@@ -188,6 +188,46 @@ const hoverStyles = `
   .shop-loc-loading {
     animation: pulse-loc 1.5s ease-in-out infinite;
   }
+
+  /* ═══════════════ MOBILE RESPONSIVE ═══════════════ */
+  @media (max-width: 768px) {
+    .shop-container { padding: 24px 14px 90px !important; }
+
+    /* Tabs full-width */
+    .shop-tabs-wrap { padding: 0 !important; }
+    .shop-tabs { width: 100%; }
+    .shop-tab { flex: 1; padding: 10px 8px !important; font-size: 12.5px !important; }
+
+    /* Filter bar stacks */
+    .shop-filter-bar { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .shop-cat-pills { overflow-x: auto; flex-wrap: nowrap !important; padding-bottom: 4px; }
+    .shop-cat-pills::-webkit-scrollbar { display: none; }
+    .shop-cat-pill { flex-shrink: 0; white-space: nowrap; }
+
+    /* Products: 2-column grid */
+    .shop-products-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+    .shop-product-card .productBody { padding: 12px 12px 14px !important; }
+
+    /* Store cards stack */
+    .shop-store-card { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+    .shop-store-actions { width: 100%; flex-direction: row; }
+    .shop-store-actions a, .shop-store-actions button { flex: 1; justify-content: center; }
+
+    /* Cart FAB: above bottom nav */
+    .shop-cart-fab { bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; right: 16px !important; padding: 10px 14px !important; }
+
+    /* Cart panel full width on mobile */
+    .shop-cart-panel { max-width: 100vw !important; }
+
+    /* Trust strip scrolls */
+    .shop-trust-strip { overflow-x: auto; flex-wrap: nowrap !important; justify-content: flex-start !important; padding: 10px 12px !important; }
+    .shop-trust-strip::-webkit-scrollbar { display: none; }
+    .shop-trust-divider { display: none; }
+  }
+
+  @media (max-width: 380px) {
+    .shop-products-grid { grid-template-columns: 1fr !important; }
+  }
 `;
 
 export default function Shop() {
@@ -249,7 +289,7 @@ export default function Shop() {
     <div style={s.root}>
       <style>{hoverStyles}</style>
 
-      <div style={s.container}>
+      <div style={s.container} className="shop-container">
         {/* ═══════════════ HEADER ═══════════════ */}
         <div style={s.header}>
           <div style={s.badge}>
@@ -264,8 +304,8 @@ export default function Shop() {
         </div>
 
         {/* ═══════════════ TABS ═══════════════ */}
-        <div style={s.tabsWrap}>
-          <div style={s.tabs}>
+        <div style={s.tabsWrap} className="shop-tabs-wrap">
+          <div style={s.tabs} className="shop-tabs">
             <button
               style={{ ...s.tab, ...(tab === "shop" ? s.tabActive : {}) }}
               className={`shop-tab ${tab === "shop" ? "active" : ""}`}
@@ -289,7 +329,7 @@ export default function Shop() {
         {tab === "shop" && (
           <>
             {/* Search & Filter Bar */}
-            <div style={s.filterBar}>
+            <div style={s.filterBar} className="shop-filter-bar">
               <div style={s.searchWrap}>
                 <FaSearch size={13} color={TEXT_MUTED} style={s.searchIcon} />
                 <input
@@ -302,12 +342,12 @@ export default function Shop() {
                 />
               </div>
 
-              <div style={s.catPills}>
+              <div style={s.catPills} className="shop-cat-pills">
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setCategory(cat)}
-                    className={`shop-pill ${category === cat ? "active" : ""}`}
+                    className={`shop-pill shop-cat-pill ${category === cat ? "active" : ""}`}
                     style={{ ...s.catPill, ...(category === cat ? s.catPillActive : {}) }}
                   >
                     {cat}
@@ -317,17 +357,17 @@ export default function Shop() {
             </div>
 
             {/* Trust Strip */}
-            <div style={s.trustStrip}>
+            <div style={s.trustStrip} className="shop-trust-strip">
               <div style={s.trustItem}>
                 <FaTruck size={13} color={MINT_DARK} />
                 <span>Same-Day Delivery</span>
               </div>
-              <div style={s.trustDivider} />
+              <div style={s.trustDivider} className="shop-trust-divider" />
               <div style={s.trustItem}>
                 <HiOutlineShieldCheck size={13} color={MINT_DARK} />
                 <span>100% Genuine Products</span>
               </div>
-              <div style={s.trustDivider} />
+              <div style={s.trustDivider} className="shop-trust-divider" />
               <div style={s.trustItem}>
                 <FaShieldAlt size={13} color={MINT_DARK} />
                 <span>Secure Payment</span>
@@ -335,7 +375,7 @@ export default function Shop() {
             </div>
 
             {/* Products Grid */}
-            <div style={s.productsGrid}>
+            <div style={s.productsGrid} className="shop-products-grid">
               {filtered.length === 0 ? (
                 <div style={s.emptyBox}>
                   <FaSearch size={40} color="#d4eddf" style={{ marginBottom: 14 }} />
@@ -525,7 +565,7 @@ export default function Shop() {
                     </div>
                   </div>
 
-                  <div style={s.storeActions}>
+                  <div style={s.storeActions} className="shop-store-actions">
                     <a href={`tel:${store.phone}`} style={s.storeCallBtn} className="shop-store-action-btn">
                       <FaPhone size={11} />
                       Call

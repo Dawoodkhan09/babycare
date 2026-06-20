@@ -60,6 +60,18 @@ const hoverStyles = `
     100% { transform: scale(1); opacity: 1; }
   }
   .fp-pop { animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+  /* ═══════════════ MOBILE RESPONSIVE ═══════════════ */
+  @media (max-width: 768px) {
+    .fp-container { padding: 16px 14px 80px !important; }
+    .fp-card {
+      padding: 24px 18px 22px !important;
+      border-radius: 16px !important;
+    }
+    .fp-btn-primary { width: 100% !important; justify-content: center !important; font-size: 15px !important; min-height: 48px !important; }
+    .fp-input { font-size: 16px !important; min-height: 48px !important; }
+    .fp-otp-input { font-size: 22px !important; min-height: 56px !important; }
+  }
 `;
 
 export default function ForgotPassword() {
@@ -130,7 +142,7 @@ export default function ForgotPassword() {
     <div style={s.root}>
       <style>{hoverStyles}</style>
 
-      <div style={s.container}>
+      <div style={s.container} className="fp-container">
         {/* HEADER */}
         <div style={s.header}>
           <div style={s.logo} onClick={() => navigate("/")}>
@@ -144,7 +156,7 @@ export default function ForgotPassword() {
         </div>
 
         {/* CARD */}
-        <div style={s.card}>
+        <div style={s.card} className="fp-card">
 
           {/* TITLE & PROGRESS */}
           {step < 4 && (

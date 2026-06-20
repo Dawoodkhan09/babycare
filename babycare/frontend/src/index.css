@@ -129,6 +129,24 @@ input[type="radio"] {
   .mobile-only {
     display: none !important;
   }
+
+  /* Hide bottom nav on desktop */
+  .bc-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* Mobile: add body padding so content doesn't hide behind BottomNav */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Ensure all inputs stay 16px on mobile (prevents iOS zoom) */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
 }
 
 /* ═══════════════════════════════════════════════════════════

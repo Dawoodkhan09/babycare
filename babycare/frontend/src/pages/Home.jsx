@@ -246,6 +246,43 @@ const hoverStyles = `
       gap: 40px !important;
     }
   }
+
+  @media (max-width: 640px) {
+    .home-hero-section {
+      padding: 48px 16px 60px !important;
+    }
+    .home-section-pad {
+      padding: 52px 16px !important;
+    }
+    .home-cta-inner {
+      padding: 36px 20px !important;
+      border-radius: 16px !important;
+    }
+    .home-cta-btns {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+    .home-cta-btns button {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+    .home-hero-btns {
+      flex-direction: column !important;
+    }
+    .home-hero-btns button {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+    .home-steps-row {
+      grid-template-columns: 1fr !important;
+    }
+    .home-doc-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .home-testi-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
 `;
 
 export default function Home() {
@@ -262,7 +299,7 @@ export default function Home() {
       <style>{hoverStyles}</style>
 
       {/* ═══════════════ HERO SECTION ═══════════════ */}
-      <section style={s.hero}>
+      <section style={s.hero} className="home-hero-section">
         <div style={s.heroBg} />
         <div style={s.heroInner} className="home-hero-grid">
 
@@ -285,7 +322,7 @@ export default function Home() {
               — all in one secure platform.
             </p>
 
-            <div style={s.heroBtns} className="bc-anim-fadeUp bc-d3">
+            <div style={s.heroBtns} className="bc-anim-fadeUp bc-d3 home-hero-btns">
               <button style={s.btnPrimary} className="home-btn-primary" onClick={() => navigate("/DoctorBooking")}>
                 Find a Doctor
                 <FaArrowRight size={12} />
@@ -355,7 +392,7 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ SERVICES SECTION ═══════════════ */}
-      <section style={s.section}>
+      <section style={s.section} className="home-section-pad">
         <div style={s.secInner}>
           <div style={s.secHeader} className="bc-anim-fadeUp">
             <span style={s.secTag}>Our Services</span>
@@ -395,7 +432,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div style={s.stepsRow}>
+          <div style={s.stepsRow} className="home-steps-row">
             {STEPS.map((step, i) => (
               <div key={step.num} style={s.stepCol} className={`home-step bc-anim-fadeUp bc-d${i + 2}`}>
                 <div style={s.stepNum} className="home-step-num">{step.num}</div>
@@ -496,7 +533,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div style={s.docGrid}>
+          <div style={s.docGrid} className="home-doc-grid">
             {DOCTORS.map((doc, i) => (
               <div key={doc.name} style={s.docCard} className={`home-doc-card bc-anim-fadeUp bc-d${i + 2}`}>
                 <div style={s.docCardTop}>
@@ -554,7 +591,7 @@ export default function Home() {
             <h2 style={s.secTitle}>What Parents Are Saying</h2>
           </div>
 
-          <div style={s.testiGrid}>
+          <div style={s.testiGrid} className="home-testi-grid">
             {TESTIMONIALS.map((t, i) => (
               <div key={i} style={s.testiCard} className={`home-testi-card bc-anim-fadeUp bc-d${i + 2}`}>
                 <FaQuoteLeft size={22} color={MINT_LIGHT} />
@@ -575,9 +612,9 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ CTA SECTION ═══════════════ */}
-      <section style={s.ctaSection}>
+      <section style={s.ctaSection} className="home-section-pad">
         <div style={s.secInner}>
-          <div style={s.ctaInner} className="bc-anim-fadeUp">
+          <div style={s.ctaInner} className="bc-anim-fadeUp home-cta-inner">
             <div style={s.ctaContent}>
               <h2 style={s.ctaTitle}>
                 Ready to Get Started?
@@ -586,7 +623,7 @@ export default function Home() {
                 Join thousands of Pakistani parents who trust BabyCare for their child's healthcare.
                 Sign up today — no credit card required.
               </p>
-              <div style={s.ctaBtns}>
+              <div style={s.ctaBtns} className="home-cta-btns">
                 <button
                   style={{ ...s.btnPrimary, background: "#fff", color: MINT_DARK, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
                   className="home-btn-ghost"

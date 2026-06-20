@@ -115,6 +115,9 @@ const hoverStyles = `
     .login-left {
       display: none !important;
     }
+    .login-mobile-logo {
+      display: flex !important;
+    }
   }
 `;
 
@@ -263,7 +266,7 @@ export default function LoginRegister() {
         <div style={s.formWrap}>
 
           {/* Mobile Logo (visible only on mobile) */}
-          <div style={s.mobileLogo}>
+          <div style={s.mobileLogo} className="login-mobile-logo">
             <div style={{ ...s.logoIcon, background: MINT_DARK }}>
               <FaStethoscope size={20} color="#fff" />
             </div>
