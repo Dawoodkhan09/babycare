@@ -47,12 +47,20 @@ export default function InstallPrompt() {
   };
 
   useEffect(() => {
-    if (isPWA) return; // Already installed
+    if (isPWA) return;
     if (wasRecentlyDismissed()) return;
 
-    // Android/Chrome: capture install prompt event
+    // Check if event was captured before React mounted (index.js captures it early)
+    if (window.__installPrompt) {
+      setDeferredPrompt(window.__installPrompt);
+      setShowBanner(true);
+      return;
+    }
+
+    // Android/Chrome: listen for late-arriving event
     const handleBeforeInstall = (e) => {
       e.preventDefault();
+      window.__installPrompt = e;
       setDeferredPrompt(e);
       setShowBanner(true);
     };
@@ -62,7 +70,10 @@ export default function InstallPrompt() {
     // iOS: show manual instructions after slight delay
     if (isIOS && !isPWA) {
       const timer = setTimeout(() => setShowBanner(true), 3000);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      };
     }
 
     return () => {
@@ -75,6 +86,7 @@ export default function InstallPrompt() {
       deferredPrompt.prompt();
       const choice = await deferredPrompt.userChoice;
       console.log("[PWA] User choice:", choice.outcome);
+      window.__installPrompt = null;
       setDeferredPrompt(null);
       setShowBanner(false);
     } else if (isIOS) {

@@ -5,6 +5,14 @@ import { AuthProvider } from "./context/AuthContext";
 import "./index.css";
 import { registerSW } from "./serviceWorkerRegistration";
 
+// Capture beforeinstallprompt early — before React mounts
+// InstallPrompt.jsx reads window.__installPrompt on mount
+window.__installPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  window.__installPrompt = e;
+});
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(

@@ -177,6 +177,7 @@ const hoverStyles = `
     }
     .nav-hamburger {
       display: flex !important;
+      margin-left: auto !important;
     }
   }
 `;
