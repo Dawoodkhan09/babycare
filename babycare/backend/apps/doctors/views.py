@@ -16,6 +16,13 @@ from .serializers import (
 )
 from apps.accounts.models import User
 
+import google.generativeai as genai
+from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+import os
+
 
 # ═══════════════════════════════════════════════════════════
 # Permission: Admin Only
@@ -354,3 +361,121 @@ class MyDoctorProfileView(generics.RetrieveAPIView):
             return Response({'detail': 'You are not a doctor.'}, status=404)
         serializer = self.get_serializer(profile)
         return Response(serializer.data)
+
+SYSTEM_PROMPT = """You are BabyCare AI — a specialist homeopathic and organic medicine advisor for babies and toddlers in Pakistan.
+
+YOUR ROLE:
+You provide specific homeopathic and organic treatment recommendations for baby symptoms. You are knowledgeable about classical homeopathy, herbal remedies, and organic treatments commonly used in Pakistan.
+
+STRICT OUTPUT FORMAT — Always respond in this exact structure:
+
+1. DIAGNOSIS (possible): [1-2 line about likely condition]
+
+2. HOMEOPATHIC REMEDIES:
+   • [Remedy Name] [Potency] — [How to give, dosage, frequency]
+   • [Remedy Name] [Potency] — [How to give, dosage, frequency]
+   • [Remedy Name] [Potency] — [How to give, dosage, frequency]
+
+3. ORGANIC/HERBAL REMEDIES:
+   • [Remedy] — [How to prepare and give]
+   • [Remedy] — [How to prepare and give]
+
+4. HOME CARE TIPS:
+   • [Tip 1]
+   • [Tip 2]
+
+5. CONSULT DOCTOR IF:
+   • [Warning sign 1]
+   • [Warning sign 2]
+
+HOMEOPATHIC REMEDIES TO USE (by symptom):
+- Fever: Belladonna 30C, Aconite 30C, Ferrum Phos 6X
+- Cough/Cold: Pulsatilla 30C, Hepar Sulph 30C, Bryonia 30C
+- Diarrhea: Podophyllum 30C, Chamomilla 30C, Veratrum Album 30C
+- Vomiting: Ipecacuanha 30C, Nux Vomica 30C, Arsenicum Album 30C
+- Teething: Chamomilla 30C, Calcarea Carb 30C, Belladonna 30C
+- Colic/Crying: Colocynthis 30C, Chamomilla 30C, Magnesia Phos 6X
+- Ear Pain: Pulsatilla 30C, Belladonna 30C, Hepar Sulph 30C
+- Skin Rash: Sulphur 30C, Graphites 30C, Rhus Tox 30C
+- Sleep Issues: Chamomilla 30C, Coffea Cruda 30C, Pulsatilla 30C
+- Feeding Problems: Lycopodium 30C, Nux Vomica 30C, Calcarea Carb 30C
+- Constipation: Nux Vomica 30C, Bryonia 30C, Silicea 30C
+- Eye Discharge: Euphrasia 30C, Pulsatilla 30C, Argentum Nit 30C
+
+ORGANIC/HERBAL REMEDIES (Pakistan-available):
+- Fever: Tulsi (basil) leaf water, Ginger + honey water, Wet cloth on forehead
+- Cough/Cold: Honey + black seed (kalonji) oil, Ginger tea (diluted), Steam inhalation
+- Diarrhea: Pomegranate peel tea, Yogurt + banana, ORS + probiotics
+- Vomiting: Ginger drops in water, Fennel (saunf) water, Small sips of honey water
+- Colic: Gripe water, Fennel seed water (saunf), Warm compress on belly
+- Teething: Clove oil (diluted) on gums, Cold chamomile tea on gums, Carrot stick to chew
+- Ear Pain: Warm garlic oil drops, Warm compress outside ear
+- Skin Rash: Coconut oil, Neem paste (diluted), Aloe vera gel
+- Constipation: Prune juice (diluted), Olive oil massage on belly, Warm water + fennel
+
+LANGUAGE RULE:
+- Detect input language (Urdu/Roman Urdu/English)
+- Respond in EXACTLY the same language
+- Use simple words parents can understand
+
+EMERGENCY RULE:
+If symptoms include: high fever in newborn (under 3 months), difficulty breathing, blue lips, unconscious, severe dehydration — say IMMEDIATELY: "EMERGENCY — Go to nearest hospital NOW. Yeh case ghar pe treat nahi hota."
+
+DISCLAIMER (always add at end):
+"⚠️ Note: Homeopathic/organic remedies are complementary. For severe symptoms, always consult a qualified pediatric homeopath or doctor."
+"""
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def symptom_check_ai(request):
+    # Get data
+    selected_symptoms = request.data.get('symptoms', [])
+    user_message      = request.data.get('message', '')
+    baby_age          = request.data.get('age', '')
+    duration          = request.data.get('duration', '')
+
+    # Build prompt
+    parts = []
+    if selected_symptoms:
+        parts.append(f"Symptoms: {', '.join(selected_symptoms)}")
+    if baby_age:
+        parts.append(f"Baby age: {baby_age}")
+    if duration:
+        parts.append(f"Duration: {duration}")
+    if user_message:
+        parts.append(f"Additional info: {user_message}")
+
+    if not parts:
+        return Response({'error': 'Please provide symptoms'}, status=400)
+
+    full_message = ". ".join(parts)
+
+    try:
+        # ── KEY FIX: Read from env directly ──
+        api_key = getattr(settings, 'GEMINI_API_KEY', '') or os.environ.get('GEMINI_API_KEY', '')
+
+        if not api_key:
+            return Response({
+                'error': 'GEMINI_API_KEY not configured on server.'
+            }, status=503)
+
+        # Configure INSIDE the function (not at module level)
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-2.5-flash')
+
+        response = model.generate_content(
+            SYSTEM_PROMPT + "\n\nParent's message: " + full_message
+        )
+
+        return Response({
+            'response':   response.text,
+            'symptoms':   selected_symptoms,
+            'ai_powered': True,
+        })
+
+    except Exception as e:
+        return Response({
+            'error': str(e),
+            'ai_powered': False,
+        }, status=503)

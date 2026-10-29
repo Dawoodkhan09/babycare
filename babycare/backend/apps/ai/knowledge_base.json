@@ -1,0 +1,182 @@
+{
+ "_source": "backend/ml/BabyCare_5_Conditions_Research.md",
+ "conditions": {
+  "Fever": {
+   "warning": false,
+   "sources": [
+    "NHS (North Bristol NHS Trust) — Fevers in children",
+    "NICE / AAP — standard paediatric fever thresholds",
+    "Boericke — Pocket Manual of Homoeopathic Materia Medica (traditional reference)"
+   ],
+   "en": {
+    "name": "Fever",
+    "causes_types": "Usually the body fighting an infection — mostly viral (cold, flu), sometimes bacterial (ear, throat, urine, chest). Can follow vaccination or overheating. Low-grade 38–38.9 °C, high-grade ≥ 39 °C.",
+    "symptoms": "Hot forehead/body, flushed face, sweating or shivering, irritability, tiredness, poor feeding.",
+    "treatment_homeopathic": "Traditional reference (Boericke's Materia Medica) — NOT medically proven: Aconite (sudden fever after cold wind, restless), Belladonna (high fever, red hot face), Ferrum phosphoricum (early low-grade fever), Gelsemium (flu-like, drowsy, chills). Never give to a baby on your own — confirm with a qualified homeopath/doctor.",
+    "treatment_organic": "Plenty of fluids in small frequent sips and keep breastfeeding; light clothing, do not over-wrap, keep the room comfortably cool; rest. Paracetamol or ibuprofen only at the correct weight/age dose if the child is uncomfortable — ask your doctor/pharmacist for the dose. Never give aspirin to children (Reye's syndrome).",
+    "emergency_advice": "See a doctor now for: any fever in a baby under 3 months; fever ≥ 39 °C at 3–6 months; fever lasting more than 5 days; stiff neck, rash like bruises, difficulty breathing, very drowsy, fits, or signs of dehydration.",
+    "disclaimer": "This is only preliminary guidance, not a replacement for a real doctor."
+   },
+   "ur": {
+    "name": "بخار",
+    "causes_types": "عموماً جسم کا انفیکشن سے لڑنا — زیادہ تر وائرل (نزلہ، فلو)، کبھی بیکٹیریل (کان، گلا، پیشاب، سینہ)۔ ویکسین یا زیادہ گرمی کے بعد بھی ہو سکتا ہے۔ ہلکا ۳۸–۳۸.۹ ڈگری، تیز ۳۹ ڈگری یا زیادہ۔",
+    "symptoms": "گرم ماتھا/جسم، سرخ چہرہ، پسینہ یا کپکپی، چڑچڑاپن، تھکن، کم کھانا پینا۔",
+    "treatment_homeopathic": "روایتی حوالہ (بوریکے میٹیریا میڈیکا) — طبی طور پر ثابت نہیں: ایکونائٹ (ٹھنڈی ہوا کے بعد اچانک بخار، بے چینی)، بیلاڈونا (تیز بخار، سرخ گرم چہرہ)، فیرم فاس (شروع کا ہلکا بخار)، جیلسیمیم (فلو جیسا، غنودگی، کپکپی)۔ بچے کو خود سے کبھی نہ دیں — مستند ہومیوپیتھ/ڈاکٹر سے تصدیق کریں۔",
+    "treatment_organic": "تھوڑا تھوڑا بار بار پانی اور مائعات، ماں کا دودھ جاری رکھیں؛ ہلکے کپڑے، زیادہ نہ لپیٹیں، کمرہ مناسب ٹھنڈا رکھیں؛ آرام۔ تکلیف ہو تو پیراسیٹامول یا آئبوپروفین صرف وزن/عمر کے مطابق صحیح خوراک میں — خوراک ڈاکٹر/فارماسسٹ سے پوچھیں۔ بچوں کو اسپرین ہرگز نہ دیں۔",
+    "emergency_advice": "فوراً ڈاکٹر کو دکھائیں اگر: تین ماہ سے کم عمر بچے کو کوئی بھی بخار؛ ۳–۶ ماہ میں ۳۹ ڈگری یا زیادہ؛ بخار پانچ دن سے زیادہ؛ گردن اکڑنا، نیل جیسے دانے، سانس میں دقت، بہت زیادہ غنودگی، دورے، یا پانی کی کمی کی علامات۔",
+    "disclaimer": "یہ صرف ابتدائی رہنمائی ہے، اصل ڈاکٹر کا متبادل نہیں۔"
+   },
+   "roman": {
+    "name": "Bukhar",
+    "causes_types": "Aam taur par jism ka infection se larna — zyada tar viral (nazla, flu), kabhi bacterial (kaan, gala, peshaab, seena). Vaccine ya zyada garmi ke baad bhi ho sakta hai. Halka 38–38.9 °C, tez 39 °C ya zyada.",
+    "symptoms": "Garam maatha/jism, surkh chehra, paseena ya kapkapi, chirchirapan, thakan, kam khana peena.",
+    "treatment_homeopathic": "Riwayati hawala (Boericke Materia Medica) — medically proven NAHI: Aconite (thandi hawa ke baad achanak bukhar, bechaini), Belladonna (tez bukhar, surkh garam chehra), Ferrum phos (shuru ka halka bukhar), Gelsemium (flu jaisa, ghunoodgi, kapkapi). Bachay ko khud se kabhi na dein — qualified homeopath/doctor se confirm karein.",
+    "treatment_organic": "Thora thora baar baar paani aur liquids, maa ka doodh jari rakhein; halke kapray, zyada na lapetein, kamra munasib thanda rakhein; aaraam. Takleef ho to paracetamol ya ibuprofen sirf wazan/umar ke mutabiq sahi dose mein — dose doctor/pharmacist se poochein. Bachon ko aspirin hargiz na dein.",
+    "emergency_advice": "Foran doctor ko dikhayein agar: 3 maah se kam umar bachay ko koi bhi bukhar; 3–6 maah mein 39 °C ya zyada; bukhar 5 din se zyada; gardan akarna, neel jaise daane, saans mein mushkil, bohot zyada ghunoodgi, daura, ya paani ki kami ki alamaat.",
+    "disclaimer": "Ye sirf ibtidai rahnumai hai, asli doctor ka badal nahi."
+   }
+  },
+  "Cold & Cough": {
+   "warning": false,
+   "sources": [
+    "healthdirect (Australian Govt.) — Coughs and colds in children",
+    "WebMD — Remedies for a toddler's cough (honey, under-1 botulism, OTC cautions)",
+    "Aga Khan University — randomised study: honey vs cough suppressant in children",
+    "Boericke — Pocket Manual of Homoeopathic Materia Medica (traditional reference)"
+   ],
+   "en": {
+    "name": "Cold & Cough",
+    "causes_types": "A viral upper-respiratory infection (rhinovirus, RSV and others) spread by droplets and touch — not by cold weather itself. Usually settles in 7–10 days; cough can linger 2–3 weeks. Can overlap with flu or move to the chest (bronchiolitis).",
+    "symptoms": "Runny/blocked nose, sneezing, cough, sore throat, mild fever, watery eyes, reduced appetite, fussiness.",
+    "treatment_homeopathic": "Traditional reference (Boericke's Materia Medica) — NOT medically proven: Allium cepa (streaming watery nose), Aconite (very early, sudden onset), Bryonia (dry painful cough), Pulsatilla (thick yellow mucus, clingy child), Spongia / Hepar sulph (barking cough). Never give to a baby on your own — confirm with a qualified homeopath/doctor.",
+    "treatment_organic": "Fluids and rest, keep breastfeeding. Honey for cough ONLY in children over 1 year (about 1 teaspoon) — NEVER give honey under 1 year (risk of infant botulism). Saline nose drops + gentle suction for a blocked nose, cool-mist humidifier, warm fluids for the throat. Do not give over-the-counter cough/cold medicines to young children.",
+    "emergency_advice": "See a doctor for: trouble breathing, bluish lips, high-pitched noisy breathing (stridor), persistent ear pain, high fever, cough longer than 3 weeks, signs of dehydration, or any baby under 3 months with a cold.",
+    "disclaimer": "This is only preliminary guidance, not a replacement for a real doctor."
+   },
+   "ur": {
+    "name": "نزلہ زکام اور کھانسی",
+    "causes_types": "سانس کی اوپری نالی کا وائرل انفیکشن (رائنو وائرس، آر ایس وی وغیرہ) جو چھینک کے قطروں اور چھونے سے پھیلتا ہے — صرف ٹھنڈے موسم سے نہیں۔ عموماً ۷–۱۰ دن میں ٹھیک ہو جاتا ہے؛ کھانسی ۲–۳ ہفتے رہ سکتی ہے۔ فلو جیسا ہو سکتا ہے یا سینے تک جا سکتا ہے۔",
+    "symptoms": "بہتی/بند ناک، چھینکیں، کھانسی، گلے میں درد، ہلکا بخار، آنکھوں سے پانی، بھوک کم، چڑچڑاپن۔",
+    "treatment_homeopathic": "روایتی حوالہ (بوریکے میٹیریا میڈیکا) — طبی طور پر ثابت نہیں: ایلیم سیپا (ناک سے پانی بہنا)، ایکونائٹ (بالکل شروع، اچانک)، برائیونیا (خشک دردناک کھانسی)، پلسٹیلا (گاڑھا پیلا بلغم)، اسپونجیا / ہیپر سلف (بھونکنے جیسی کھانسی)۔ بچے کو خود سے کبھی نہ دیں — مستند ہومیوپیتھ/ڈاکٹر سے تصدیق کریں۔",
+    "treatment_organic": "مائعات اور آرام، ماں کا دودھ جاری رکھیں۔ کھانسی کے لیے شہد صرف ایک سال سے بڑے بچوں کو (تقریباً ایک چائے کا چمچ) — ایک سال سے کم عمر کو شہد ہرگز نہ دیں (بوٹولزم کا خطرہ)۔ بند ناک کے لیے نمکین قطرے اور ہلکی سکشن، ٹھنڈی بھاپ والا ہیومیڈیفائر، گلے کے لیے نیم گرم مائعات۔ چھوٹے بچوں کو بازاری کھانسی/زکام کی دوائیں نہ دیں۔",
+    "emergency_advice": "ڈاکٹر کو دکھائیں اگر: سانس میں دقت، نیلے ہونٹ، سانس میں تیز سیٹی جیسی آواز، کان میں مسلسل درد، تیز بخار، تین ہفتے سے زیادہ کھانسی، پانی کی کمی کی علامات، یا تین ماہ سے کم عمر بچے کو زکام۔",
+    "disclaimer": "یہ صرف ابتدائی رہنمائی ہے، اصل ڈاکٹر کا متبادل نہیں۔"
+   },
+   "roman": {
+    "name": "Nazla Zukaam aur Khansi",
+    "causes_types": "Saans ki oopri naali ka viral infection (rhinovirus, RSV waghera) jo chheenk ke qatron aur chhoone se phailta hai — sirf thanday mausam se nahi. Aam taur par 7–10 din mein theek; khansi 2–3 hafte reh sakti hai. Flu jaisa ho sakta hai ya seene tak ja sakta hai.",
+    "symptoms": "Behti/band naak, chheenkein, khansi, gale mein dard, halka bukhar, aankhon se paani, bhook kam, chirchirapan.",
+    "treatment_homeopathic": "Riwayati hawala (Boericke Materia Medica) — medically proven NAHI: Allium cepa (naak se paani behna), Aconite (bilkul shuru, achanak), Bryonia (khushk dardnaak khansi), Pulsatilla (gaarha peela balgham), Spongia / Hepar sulph (bhonkne jaisi khansi). Bachay ko khud se kabhi na dein — qualified homeopath/doctor se confirm karein.",
+    "treatment_organic": "Liquids aur aaraam, maa ka doodh jari rakhein. Khansi ke liye shehad SIRF 1 saal se baray bachon ko (taqreeban 1 chai ka chamach) — 1 saal se kam umar ko shehad hargiz na dein (botulism ka khatra). Band naak ke liye saline qatray aur halki suction, thandi bhaap wala humidifier, gale ke liye neem garam liquids. Chhote bachon ko bazari khansi/zukaam ki dawaiyan na dein.",
+    "emergency_advice": "Doctor ko dikhayein agar: saans mein mushkil, neelay hont, saans mein tez seeti jaisi awaaz, kaan mein musalsal dard, tez bukhar, 3 hafte se zyada khansi, paani ki kami ki alamaat, ya 3 maah se kam umar bachay ko zukaam.",
+    "disclaimer": "Ye sirf ibtidai rahnumai hai, asli doctor ka badal nahi."
+   }
+  },
+  "Teething": {
+   "warning": true,
+   "sources": [
+    "FDA safety communication on homeopathic teething tablets/gels (belladonna) — reported via Providence Health, 2017",
+    "NIH / FDA statements that homeopathy lacks evidence of effectiveness",
+    "AAP — standard paediatric teething guidance"
+   ],
+   "en": {
+    "name": "Teething",
+    "causes_types": "Normal eruption of baby teeth, usually at 6–24 months. Teeth pushing through the gums cause local inflammation and mild discomfort — it is not an illness and does not cause high fever.",
+    "symptoms": "Drooling, sore/swollen gums, chewing or biting objects, mild irritability, disturbed sleep, cheek rubbing, at most a slight rise in temperature.",
+    "treatment_homeopathic": "⚠️ FDA WARNING: Do NOT use homeopathic teething tablets or gels. FDA testing found inconsistent, sometimes dangerous amounts of belladonna, and investigated seizures and the deaths of at least 10 babies. Traditional texts mention Chamomilla and Calcarea phosphorica, but these must never be self-given to a baby — we do not recommend any homeopathic product for teething. Use the safe physical care instead.",
+    "treatment_organic": "Chilled (not frozen) teething ring or a clean cold washcloth to chew; gently rub the gums with a clean finger; extra cuddles and comfort; wipe drool to prevent rash. Ask a paediatrician before any medicine or gel.",
+    "emergency_advice": "High fever, diarrhoea, poor feeding or a baby who looks unwell are NOT teething — see a doctor to find the real cause.",
+    "disclaimer": "This is only preliminary guidance, not a replacement for a real doctor."
+   },
+   "ur": {
+    "name": "دانت نکلنا",
+    "causes_types": "دودھ کے دانتوں کا قدرتی طور پر نکلنا، عموماً ۶–۲۴ ماہ میں۔ مسوڑھوں سے دانت نکلنے پر ہلکی سوجن اور تکلیف ہوتی ہے — یہ بیماری نہیں اور اس سے تیز بخار نہیں ہوتا۔",
+    "symptoms": "رال ٹپکنا، مسوڑھوں میں درد/سوجن، چیزیں چبانا یا کاٹنا، ہلکا چڑچڑاپن، نیند خراب، گال رگڑنا، زیادہ سے زیادہ ہلکی سی حرارت۔",
+    "treatment_homeopathic": "⚠️ ایف ڈی اے وارننگ: دانت نکلنے کی ہومیوپیتھک گولیاں یا جیل ہرگز استعمال نہ کریں۔ ایف ڈی اے کی جانچ میں بیلاڈونا کی غیر یکساں اور کبھی خطرناک مقدار پائی گئی، اور دوروں اور کم از کم ۱۰ بچوں کی اموات کی تحقیقات ہوئیں۔ روایتی کتابوں میں کیمومیلا اور کلکیریا فاس کا ذکر ہے، لیکن انہیں بچے کو خود سے کبھی نہ دیں — ہم دانت نکلنے کے لیے کسی ہومیوپیتھک پروڈکٹ کی سفارش نہیں کرتے۔ محفوظ جسمانی طریقے اپنائیں۔",
+    "treatment_organic": "ٹھنڈا (جما ہوا نہیں) ٹیتھنگ رنگ یا صاف ٹھنڈا گیلا کپڑا چبانے کو دیں؛ صاف انگلی سے مسوڑھوں کی ہلکی مالش کریں؛ زیادہ پیار اور تسلی؛ رال صاف کرتے رہیں تاکہ دانے نہ ہوں۔ کوئی بھی دوا یا جیل دینے سے پہلے بچوں کے ڈاکٹر سے پوچھیں۔",
+    "emergency_advice": "تیز بخار، دست، کم کھانا پینا یا بچہ بیمار لگے تو یہ دانت نکلنا نہیں — اصل وجہ جاننے کے لیے ڈاکٹر کو دکھائیں۔",
+    "disclaimer": "یہ صرف ابتدائی رہنمائی ہے، اصل ڈاکٹر کا متبادل نہیں۔"
+   },
+   "roman": {
+    "name": "Daant Nikalna",
+    "causes_types": "Doodh ke daanton ka qudrati taur par nikalna, aam taur par 6–24 maah mein. Masooron se daant nikalne par halki sojan aur takleef hoti hai — ye bimari nahi aur is se tez bukhar nahi hota.",
+    "symptoms": "Raal tapakna, masooron mein dard/sojan, cheezein chabana ya kaatna, halka chirchirapan, neend kharab, gaal ragarna, zyada se zyada halki si hararat.",
+    "treatment_homeopathic": "⚠️ FDA WARNING: Daant nikalne ki homeopathic goliyan ya gel hargiz istemal na karein. FDA ki jaanch mein belladonna ki ghair yaksaan aur kabhi khatarnaak miqdaar payi gayi, aur dauron aur kam az kam 10 bachon ki amwaat ki tehqeeq hui. Riwayati kitabon mein Chamomilla aur Calcarea phos ka zikr hai, lekin inhein bachay ko khud se kabhi na dein — hum daant nikalne ke liye kisi homeopathic product ki sifarish nahi karte. Mehfooz jismani tareeqe apnayein.",
+    "treatment_organic": "Thanda (jama hua nahi) teething ring ya saaf thanda geela kapra chabane ko dein; saaf ungli se masooron ki halki maalish karein; zyada pyaar aur tasalli; raal saaf karte rahein taake daane na hon. Koi bhi dawa ya gel dene se pehle bachon ke doctor se poochein.",
+    "emergency_advice": "Tez bukhar, dast, kam khana peena ya bacha bimar lage to ye daant nikalna NAHI — asal wajah jaanne ke liye doctor ko dikhayein.",
+    "disclaimer": "Ye sirf ibtidai rahnumai hai, asli doctor ka badal nahi."
+   }
+  },
+  "Diarrhea": {
+   "warning": false,
+   "sources": [
+    "WHO / UNICEF — Joint Statement: Clinical Management of Acute Diarrhoea (ORS + zinc)",
+    "WHO — Diarrhoeal disease guidance",
+    "NCBI/PMC — ORS, zinc & rotavirus vaccine in childhood acute diarrhea (PMC3045093)",
+    "Boericke — Pocket Manual of Homoeopathic Materia Medica (traditional reference)"
+   ],
+   "en": {
+    "name": "Diarrhea",
+    "causes_types": "3 or more loose/watery stools in 24 hours, usually from infection — rotavirus (leading viral cause), bacteria (E. coli, Shigella, Salmonella), parasites, or contaminated food/water. Types: acute watery, bloody (dysentery), persistent (14+ days). The main danger is dehydration.",
+    "symptoms": "Frequent loose stools, tummy cramps, vomiting, mild fever, reduced appetite. Dehydration signs: dry mouth, few/no wet nappies, sunken eyes, no tears, lethargy.",
+    "treatment_homeopathic": "Traditional reference (Boericke's Materia Medica) — NOT medically proven and NEVER a substitute for ORS: Arsenicum album (diarrhoea + vomiting after bad food), Podophyllum (profuse watery stool), Chamomilla (greenish stool while teething), China (weakness from fluid loss). Never give to a baby on your own — confirm with a qualified homeopath/doctor.",
+    "treatment_organic": "WHO/UNICEF first-line: low-osmolarity ORS after every loose stool; keep breastfeeding and normal feeding. Zinc 20 mg/day for 10–14 days (10 mg/day for babies under 6 months) — shortens the illness and prevents recurrence. Good hand washing; rotavirus vaccine prevents it. Avoid anti-diarrhoea medicines in young children unless a doctor advises.",
+    "emergency_advice": "See a doctor now for: signs of dehydration, blood in stool, vomiting so fluids cannot stay down, diarrhoea over 14 days, high fever, or any baby under 1 year with watery diarrhoea. Keep giving ORS on the way.",
+    "disclaimer": "This is only preliminary guidance, not a replacement for a real doctor."
+   },
+   "ur": {
+    "name": "دست (اسہال)",
+    "causes_types": "۲۴ گھنٹے میں تین یا زیادہ پتلے/پانی جیسے پاخانے، عموماً انفیکشن سے — روٹا وائرس (سب سے عام)، بیکٹیریا (ای کولائی، شگیلا، سالمونیلا)، کیڑے، یا آلودہ کھانا/پانی۔ اقسام: پانی والے، خونی (پیچش)، لمبے (۱۴+ دن)۔ سب سے بڑا خطرہ پانی کی کمی ہے۔",
+    "symptoms": "بار بار پتلا پاخانہ، پیٹ میں مروڑ، الٹی، ہلکا بخار، بھوک کم۔ پانی کی کمی کی علامات: خشک منہ، بہت کم یا گیلے ڈائپر نہیں، دھنسی آنکھیں، آنسو نہیں، سستی۔",
+    "treatment_homeopathic": "روایتی حوالہ (بوریکے میٹیریا میڈیکا) — طبی طور پر ثابت نہیں اور او آر ایس کا متبادل ہرگز نہیں: آرسینکم البم (خراب کھانے کے بعد دست اور الٹی)، پوڈوفائلم (بہت زیادہ پانی والے دست)، کیمومیلا (دانت نکلتے وقت سبز پاخانہ)، چائنا (پانی کی کمی سے کمزوری)۔ بچے کو خود سے کبھی نہ دیں — مستند ہومیوپیتھ/ڈاکٹر سے تصدیق کریں۔",
+    "treatment_organic": "ڈبلیو ایچ او/یونیسف کا پہلا علاج: ہر پتلے پاخانے کے بعد او آر ایس؛ ماں کا دودھ اور معمول کی غذا جاری رکھیں۔ زنک ۲۰ ملی گرام روزانہ ۱۰–۱۴ دن (چھ ماہ سے کم عمر کو ۱۰ ملی گرام روزانہ) — بیماری جلد ختم کرتا ہے اور دوبارہ ہونے سے بچاتا ہے۔ ہاتھ اچھی طرح دھوئیں؛ روٹا وائرس ویکسین بچاؤ کرتی ہے۔ ڈاکٹر کے کہے بغیر چھوٹے بچوں کو دست روکنے والی دوا نہ دیں۔",
+    "emergency_advice": "فوراً ڈاکٹر کو دکھائیں اگر: پانی کی کمی کی علامات، پاخانے میں خون، اتنی الٹی کہ پانی نہ رکے، ۱۴ دن سے زیادہ دست، تیز بخار، یا ایک سال سے کم عمر بچے کو پانی جیسے دست۔ راستے میں بھی او آر ایس دیتے رہیں۔",
+    "disclaimer": "یہ صرف ابتدائی رہنمائی ہے، اصل ڈاکٹر کا متبادل نہیں۔"
+   },
+   "roman": {
+    "name": "Dast (Diarrhea)",
+    "causes_types": "24 ghante mein 3 ya zyada patle/paani jaise paakhane, aam taur par infection se — rotavirus (sab se aam), bacteria (E. coli, Shigella, Salmonella), keeray, ya aalooda khana/paani. Iqsaam: paani wale, khooni (pechish), lambe (14+ din). Sab se bara khatra paani ki kami hai.",
+    "symptoms": "Baar baar patla paakhana, pait mein marorr, ulti, halka bukhar, bhook kam. Paani ki kami ki alamaat: khushk munh, bohot kam ya geelay diaper nahi, dhansi aankhein, aansu nahi, susti.",
+    "treatment_homeopathic": "Riwayati hawala (Boericke Materia Medica) — medically proven NAHI aur ORS ka badal hargiz nahi: Arsenicum album (kharab khane ke baad dast aur ulti), Podophyllum (bohot zyada paani wale dast), Chamomilla (daant nikalte waqt sabz paakhana), China (paani ki kami se kamzori). Bachay ko khud se kabhi na dein — qualified homeopath/doctor se confirm karein.",
+    "treatment_organic": "WHO/UNICEF ka pehla ilaaj: har patle paakhane ke baad ORS; maa ka doodh aur aam ghiza jari rakhein. Zinc 20 mg rozana 10–14 din (6 maah se kam umar ko 10 mg rozana) — bimari jaldi khatam karta hai aur dobara hone se bachata hai. Haath achhi tarah dhoyein; rotavirus vaccine bachao karti hai. Doctor ke kahe baghair chhote bachon ko dast rokne wali dawa na dein.",
+    "emergency_advice": "Foran doctor ko dikhayein agar: paani ki kami ki alamaat, paakhane mein khoon, itni ulti ke paani na ruke, 14 din se zyada dast, tez bukhar, ya 1 saal se kam umar bachay ko paani jaise dast. Raaste mein bhi ORS dete rahein.",
+    "disclaimer": "Ye sirf ibtidai rahnumai hai, asli doctor ka badal nahi."
+   }
+  },
+  "Sleep Issues": {
+   "warning": false,
+   "sources": [
+    "Huckleberry (paediatric sleep) — Why is my toddler waking at night?",
+    "AAP — sleep duration guidance",
+    "Boericke — Pocket Manual of Homoeopathic Materia Medica (traditional reference)"
+   ],
+   "en": {
+    "name": "Sleep Issues",
+    "causes_types": "Trouble falling asleep or frequent night waking — often developmentally normal. Common causes: sleep associations (needing a feed/parent to fall back asleep), hunger, teething, illness (cold, ear infection, reflux), overtiredness or irregular naps, fears/nightmares or night terrors.",
+    "symptoms": "Frequent night waking, restlessness, bedtime resistance, crying at night, early rising, daytime crankiness.",
+    "treatment_homeopathic": "Traditional reference (Boericke's Materia Medica) — NOT medically proven: Chamomilla (irritable, restless, often teething), Coffea cruda (wakeful, overactive mind), Cina (restless sleep, teeth grinding), Passiflora (restlessness). Never give to a baby on your own — confirm with a qualified homeopath/doctor.",
+    "treatment_organic": "Calm, predictable bedtime routine of 30–45 minutes (bath, pyjamas, story); no screens 1–2 hours before bed; consistent bedtime and regular naps (toddlers need about 11–14 hours in 24 hours); encourage self-soothing, white noise or a comfort object, brief calm reassurance at night; rule out hunger, teething, illness, a wet nappy, or a room that is too hot/cold.",
+    "emergency_advice": "See a doctor if sleep problems come with snoring or pauses in breathing, poor growth, extreme daytime sleepiness, or illness signs such as fever, pain or ear-pulling.",
+    "disclaimer": "This is only preliminary guidance, not a replacement for a real doctor."
+   },
+   "ur": {
+    "name": "نیند کے مسائل",
+    "causes_types": "سونے میں دقت یا رات کو بار بار جاگنا — اکثر عمر کے لحاظ سے معمول کی بات۔ عام وجوہات: سونے کی عادتیں (دوبارہ سونے کے لیے دودھ/والدین کی ضرورت)، بھوک، دانت نکلنا، بیماری (زکام، کان کا انفیکشن، تیزابیت)، زیادہ تھکن یا بے قاعدہ قیلولہ، ڈر/برے خواب۔",
+    "symptoms": "رات کو بار بار جاگنا، بے چینی، سونے سے انکار، رات کو رونا، صبح بہت جلدی اٹھنا، دن میں چڑچڑاپن۔",
+    "treatment_homeopathic": "روایتی حوالہ (بوریکے میٹیریا میڈیکا) — طبی طور پر ثابت نہیں: کیمومیلا (چڑچڑا، بے چین، اکثر دانت نکلتے وقت)، کوفیا کروڈا (جاگتا رہنا، ذہن بہت متحرک)، سینا (بے چین نیند، دانت پیسنا)، پیسی فلورا (بے چینی)۔ بچے کو خود سے کبھی نہ دیں — مستند ہومیوپیتھ/ڈاکٹر سے تصدیق کریں۔",
+    "treatment_organic": "سونے سے پہلے ۳۰–۴۵ منٹ کا پرسکون اور ایک جیسا معمول (نہلانا، کپڑے، کہانی)؛ سونے سے ۱–۲ گھنٹے پہلے اسکرین بند؛ سونے کا وقت مقرر اور باقاعدہ قیلولہ (چھوٹے بچوں کو ۲۴ گھنٹے میں تقریباً ۱۱–۱۴ گھنٹے نیند)؛ خود سے پرسکون ہونے کی عادت، ہلکی آواز یا پسندیدہ کھلونا، رات کو مختصر تسلی؛ بھوک، دانت، بیماری، گیلا ڈائپر یا بہت گرم/ٹھنڈا کمرہ چیک کریں۔",
+    "emergency_advice": "ڈاکٹر کو دکھائیں اگر نیند کے ساتھ خراٹے یا سانس رکنا، کم نشوونما، دن میں بہت زیادہ نیند، یا بیماری کی علامات (بخار، درد، کان کھینچنا) ہوں۔",
+    "disclaimer": "یہ صرف ابتدائی رہنمائی ہے، اصل ڈاکٹر کا متبادل نہیں۔"
+   },
+   "roman": {
+    "name": "Neend ke Masail",
+    "causes_types": "Sone mein mushkil ya raat ko baar baar jaagna — aksar umar ke lehaaz se maamool ki baat. Aam wajoohat: sone ki aadatein (dobara sone ke liye doodh/walidain ki zaroorat), bhook, daant nikalna, bimari (zukaam, kaan ka infection, tezabiyat), zyada thakan ya be-qaida qailoola, darr/buray khwab.",
+    "symptoms": "Raat ko baar baar jaagna, bechaini, sone se inkaar, raat ko rona, subah bohot jaldi uthna, din mein chirchirapan.",
+    "treatment_homeopathic": "Riwayati hawala (Boericke Materia Medica) — medically proven NAHI: Chamomilla (chirchira, bechain, aksar daant nikalte waqt), Coffea cruda (jaagta rehna, zehan bohot active), Cina (bechain neend, daant peesna), Passiflora (bechaini). Bachay ko khud se kabhi na dein — qualified homeopath/doctor se confirm karein.",
+    "treatment_organic": "Sone se pehle 30–45 minute ka pur-sukoon aur ek jaisa maamool (nehlana, kapray, kahani); sone se 1–2 ghante pehle screen band; sone ka waqt muqarrar aur baqaida qailoola (chhote bachon ko 24 ghante mein taqreeban 11–14 ghante neend); khud se pur-sukoon hone ki aadat, halki awaaz ya pasandeeda khilona, raat ko mukhtasar tasalli; bhook, daant, bimari, geela diaper ya bohot garam/thanda kamra check karein.",
+    "emergency_advice": "Doctor ko dikhayein agar neend ke saath kharraate ya saans rukna, kam nashonuma, din mein bohot zyada neend, ya bimari ki alamaat (bukhar, dard, kaan kheenchna) hon.",
+    "disclaimer": "Ye sirf ibtidai rahnumai hai, asli doctor ka badal nahi."
+   }
+  }
+ }
+}

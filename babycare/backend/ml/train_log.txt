@@ -1,0 +1,51 @@
+scikit-learn 1.9.1
+Rows: 16000 | features: ['fever', 'cold_cough', 'teething_pain', 'diarrhea', 'sleep_issues', 'age_months', 'duration_days']
+Class counts: {'Teething': 3200, 'Cold & Cough': 3200, 'Fever': 3200, 'Diarrhea': 3200, 'Sleep Issues': 3200}
+
+LogisticRegression: CV 0.9095 ± 0.0013 | test 0.9131 | 3.4s
+
+RandomForest: CV 0.9059 ± 0.0024 | test 0.9128 | 5.5s
+
+═══ Classification report — LogisticRegression ═══
+              precision    recall  f1-score   support
+
+       Fever      0.895     0.841     0.867       640
+Cold & Cough      0.913     0.898     0.906       640
+    Teething      0.926     0.977     0.951       640
+    Diarrhea      0.896     0.978     0.935       640
+Sleep Issues      0.938     0.872     0.904       640
+
+    accuracy                          0.913      3200
+   macro avg      0.913     0.913     0.912      3200
+weighted avg      0.913     0.913     0.912      3200
+
+Confusion matrix (rows = actual, cols = predicted): ['Fever', 'Cold & Cough', 'Teething', 'Diarrhea', 'Sleep Issues']
+[[538  27   0  73   2]
+ [ 45 575   0   0  20]
+ [  0   0 625   0  15]
+ [ 14   0   0 626   0]
+ [  4  28  50   0 558]]
+
+═══ Classification report — RandomForest ═══
+              precision    recall  f1-score   support
+
+       Fever      0.840     0.845     0.843       640
+Cold & Cough      0.921     0.891     0.905       640
+    Teething      0.942     0.986     0.963       640
+    Diarrhea      0.898     0.938     0.917       640
+Sleep Issues      0.967     0.905     0.935       640
+
+    accuracy                          0.913      3200
+   macro avg      0.914     0.913     0.913      3200
+weighted avg      0.914     0.913     0.913      3200
+
+Confusion matrix (rows = actual, cols = predicted): ['Fever', 'Cold & Cough', 'Teething', 'Diarrhea', 'Sleep Issues']
+[[541  31   0  68   0]
+ [ 59 570   0   0  11]
+ [  0   0 631   0   9]
+ [ 40   0   0 600   0]
+ [  4  18  39   0 579]]
+
+★ Best model: LogisticRegression
+Saved D:\projects\fyp\babycare\backend\ml\model.pkl
+Saved D:\projects\fyp\babycare\backend\ml\accuracy.png

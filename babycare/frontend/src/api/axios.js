@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Backend URL — environment variable se aata hai
-const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: baseURL,

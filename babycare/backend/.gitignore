@@ -20,3 +20,5 @@ __pycache__/
 .Python
 venv/
 env/
+# Data dumps (contain user data)
+data_backup.json

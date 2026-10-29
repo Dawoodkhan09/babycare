@@ -1,0 +1,296 @@
+{
+  "_comment": "BabyCare System Check chatbot. Node types: message | single_select | multi_select | freetext | submit. Option 'set' jama object mein lagta hai: card keys (fever, cold_cough, teething_pain, diarrhea, sleep_issues) = 1 matlab symptom maujood; 'emergency': true matlab red flag; baqi keys (main_complaint, age_label, duration_label) seedha assign. freetext ka text 'set_to' key mein jata hai ('notes' append hota hai).",
+  "_branch_note": "q_duration ke baad main_complaint ke hisaab se: fever -> f1, cold_cough -> c1, teething_pain -> t1, diarrhea -> d1, sleep_issues -> s1; freetext/other -> seedha q_redflags. Ye logic Symptomchecker.jsx (BRANCH) mein hai.",
+  "start": "start",
+  "card_keys": ["fever", "cold_cough", "teething_pain", "diarrhea", "sleep_issues"],
+
+  "disclaimer": {
+    "en": "This is only preliminary guidance, not a replacement for a real doctor.",
+    "ur": "یہ صرف ابتدائی رہنمائی ہے، اصل ڈاکٹر کا متبادل نہیں۔",
+    "roman": "Ye sirf ibtidai rahnumai hai, asli doctor ka badal nahi."
+  },
+  "emergency_message": {
+    "en": "These signs can be serious. Please see a doctor immediately or go to the nearest hospital. Do not wait for home treatment.",
+    "ur": "یہ علامات سنگین ہو سکتی ہیں۔ براہِ کرم فوراً ڈاکٹر کو دکھائیں یا قریبی ہسپتال جائیں۔ گھریلو علاج کا انتظار نہ کریں۔",
+    "roman": "Ye alamaat sangeen ho sakti hain. Barah-e-karam foran doctor ko dikhayein ya qareebi hospital jayein. Gharelu ilaaj ka intezar na karein."
+  },
+
+  "nodes": {
+    "start": {
+      "type": "message",
+      "text": {
+        "en": "Assalam-o-Alaikum! I'm the BabyCare assistant. I'll ask a few short questions, like a doctor would, and then suggest what might be going on.",
+        "ur": "السلام علیکم! میں بے بی کیئر اسسٹنٹ ہوں۔ میں ڈاکٹر کی طرح چند مختصر سوال پوچھوں گا، پھر بتاؤں گا کہ کیا مسئلہ ہو سکتا ہے۔",
+        "roman": "Assalam-o-Alaikum! Main BabyCare assistant hoon. Main doctor ki tarah kuch chhote sawaal poochunga, phir bataunga ke kya masla ho sakta hai."
+      },
+      "next": "q_main"
+    },
+
+    "q_main": {
+      "type": "single_select",
+      "text": {
+        "en": "What is the main problem your baby is having?",
+        "ur": "آپ کے بچے کو سب سے بڑا مسئلہ کیا ہے؟",
+        "roman": "Aap ke bachay ko sab se bara masla kya hai?"
+      },
+      "allow_freetext": true,
+      "set_to": "notes",
+      "freetext_set": { "main_complaint": "other" },
+      "options": [
+        { "id": "fever", "label": { "en": "Fever", "ur": "بخار", "roman": "Bukhar" },
+          "set": { "main_complaint": "fever", "fever": 1 } },
+        { "id": "cold_cough", "label": { "en": "Cold & Cough", "ur": "نزلہ و کھانسی", "roman": "Nazla aur khansi" },
+          "set": { "main_complaint": "cold_cough", "cold_cough": 1 } },
+        { "id": "teething_pain", "label": { "en": "Teething", "ur": "دانت نکلنا", "roman": "Daant nikalna" },
+          "set": { "main_complaint": "teething_pain", "teething_pain": 1 } },
+        { "id": "diarrhea", "label": { "en": "Diarrhea / loose stools", "ur": "دست / پتلا پاخانہ", "roman": "Dast / patla paakhana" },
+          "set": { "main_complaint": "diarrhea", "diarrhea": 1 } },
+        { "id": "sleep_issues", "label": { "en": "Sleep problems", "ur": "نیند کے مسائل", "roman": "Neend ke masail" },
+          "set": { "main_complaint": "sleep_issues", "sleep_issues": 1 } }
+      ],
+      "next": "q_age"
+    },
+
+    "q_age": {
+      "type": "single_select",
+      "text": {
+        "en": "How old is your baby?",
+        "ur": "آپ کے بچے کی عمر کتنی ہے؟",
+        "roman": "Aap ke bachay ki umar kitni hai?"
+      },
+      "options": [
+        { "id": "0-3m", "label": { "en": "0–3 months", "ur": "0–3 ماہ", "roman": "0–3 maah" }, "set": { "age_label": "0-3m" } },
+        { "id": "3-12m", "label": { "en": "3–12 months", "ur": "3–12 ماہ", "roman": "3–12 maah" }, "set": { "age_label": "3-12m" } },
+        { "id": "1-3y", "label": { "en": "1–3 years", "ur": "1–3 سال", "roman": "1–3 saal" }, "set": { "age_label": "1-3y" } },
+        { "id": "3-6y", "label": { "en": "3–6 years", "ur": "3–6 سال", "roman": "3–6 saal" }, "set": { "age_label": "3-6y" } },
+        { "id": "6-18y", "label": { "en": "6–18 years", "ur": "6–18 سال", "roman": "6–18 saal" }, "set": { "age_label": "6-18y" } }
+      ],
+      "next": "q_duration"
+    },
+
+    "q_duration": {
+      "type": "single_select",
+      "text": {
+        "en": "Since when has this been going on?",
+        "ur": "یہ مسئلہ کب سے ہے؟",
+        "roman": "Ye masla kab se hai?"
+      },
+      "options": [
+        { "id": "today", "label": { "en": "Since today", "ur": "آج سے", "roman": "Aaj se" }, "set": { "duration_label": "today" } },
+        { "id": "1-2d", "label": { "en": "1–2 days", "ur": "1–2 دن", "roman": "1–2 din" }, "set": { "duration_label": "1-2d" } },
+        { "id": "3-5d", "label": { "en": "3–5 days", "ur": "3–5 دن", "roman": "3–5 din" }, "set": { "duration_label": "3-5d" } },
+        { "id": "5d+", "label": { "en": "More than 5 days", "ur": "5 دن سے زیادہ", "roman": "5 din se zyada" }, "set": { "duration_label": "5d+" } }
+      ],
+      "next": "q_redflags"
+    },
+
+    "f1": {
+      "type": "single_select",
+      "text": {
+        "en": "How high is the fever?",
+        "ur": "بخار کتنا تیز ہے؟",
+        "roman": "Bukhar kitna tez hai?"
+      },
+      "options": [
+        { "id": "mild", "label": { "en": "Mild (below 38.5°C / 101°F)", "ur": "ہلکا (38.5°C / 101°F سے کم)", "roman": "Halka (38.5°C / 101°F se kam)" }, "set": {} },
+        { "id": "high", "label": { "en": "High (38.5–40°C)", "ur": "تیز (38.5–40°C)", "roman": "Tez (38.5–40°C)" }, "set": {} },
+        { "id": "very_high", "label": { "en": "Very high (above 40°C / 104°F)", "ur": "بہت تیز (40°C / 104°F سے زیادہ)", "roman": "Bohat tez (40°C / 104°F se zyada)" },
+          "set": { "emergency": true } },
+        { "id": "unknown", "label": { "en": "Not measured", "ur": "ناپا نہیں", "roman": "Naapa nahi" }, "set": {} }
+      ],
+      "next": "f2"
+    },
+    "f2": {
+      "type": "single_select",
+      "text": {
+        "en": "Is your baby feeding and drinking normally?",
+        "ur": "کیا بچہ ٹھیک سے دودھ / پانی پی رہا ہے؟",
+        "roman": "Kya bacha theek se doodh / paani pee raha hai?"
+      },
+      "options": [
+        { "id": "normal", "label": { "en": "Yes, normally", "ur": "ہاں، معمول کے مطابق", "roman": "Haan, maamool ke mutabiq" }, "set": {} },
+        { "id": "less", "label": { "en": "A bit less", "ur": "کچھ کم", "roman": "Kuch kam" }, "set": {} },
+        { "id": "refusing", "label": { "en": "Refusing all feeds / drinks", "ur": "بالکل نہیں پی رہا", "roman": "Bilkul nahi pee raha" },
+          "set": { "emergency": true } }
+      ],
+      "next": "f3"
+    },
+    "f3": {
+      "type": "multi_select",
+      "text": {
+        "en": "Is anything else happening along with the fever?",
+        "ur": "بخار کے ساتھ اور کیا ہو رہا ہے؟",
+        "roman": "Bukhar ke saath aur kya ho raha hai?"
+      },
+      "options": [
+        { "id": "cough", "label": { "en": "Cough / runny nose", "ur": "کھانسی / بہتی ناک", "roman": "Khansi / behti naak" }, "set": { "cold_cough": 1 } },
+        { "id": "loose", "label": { "en": "Loose stools", "ur": "پتلا پاخانہ", "roman": "Patla paakhana" }, "set": { "diarrhea": 1 } },
+        { "id": "sleep", "label": { "en": "Poor sleep", "ur": "نیند خراب", "roman": "Neend kharab" }, "set": { "sleep_issues": 1 } },
+        { "id": "none", "exclusive": true, "label": { "en": "Nothing else", "ur": "اور کچھ نہیں", "roman": "Aur kuch nahi" }, "set": {} }
+      ],
+      "next": "q_redflags"
+    },
+
+    "c1": {
+      "type": "single_select",
+      "text": {
+        "en": "What kind of cough is it?",
+        "ur": "کھانسی کس قسم کی ہے؟",
+        "roman": "Khansi kis qisam ki hai?"
+      },
+      "options": [
+        { "id": "dry", "label": { "en": "Dry cough", "ur": "خشک کھانسی", "roman": "Khushk khansi" }, "set": {} },
+        { "id": "wet", "label": { "en": "Wet cough (with mucus)", "ur": "بلغم والی کھانسی", "roman": "Balgham wali khansi" }, "set": {} },
+        { "id": "barking", "label": { "en": "Barking cough", "ur": "بھونکنے جیسی کھانسی", "roman": "Bhonkne jaisi khansi" }, "set": {} },
+        { "id": "nose_only", "label": { "en": "Only runny / blocked nose", "ur": "صرف بہتی / بند ناک", "roman": "Sirf behti / band naak" }, "set": {} }
+      ],
+      "next": "c2"
+    },
+    "c2": {
+      "type": "single_select",
+      "text": {
+        "en": "Does your baby also have a fever?",
+        "ur": "کیا بچے کو بخار بھی ہے؟",
+        "roman": "Kya bachay ko bukhar bhi hai?"
+      },
+      "options": [
+        { "id": "no", "label": { "en": "No fever", "ur": "بخار نہیں", "roman": "Bukhar nahi" }, "set": {} },
+        { "id": "mild", "label": { "en": "Mild fever", "ur": "ہلکا بخار", "roman": "Halka bukhar" }, "set": { "fever": 1 } },
+        { "id": "high", "label": { "en": "High fever", "ur": "تیز بخار", "roman": "Tez bukhar" }, "set": { "fever": 1 } }
+      ],
+      "next": "q_redflags"
+    },
+
+    "t1": {
+      "type": "multi_select",
+      "text": {
+        "en": "Which of these signs do you notice?",
+        "ur": "ان میں سے کون سی علامات نظر آ رہی ہیں؟",
+        "roman": "In mein se kaun si alamaat nazar aa rahi hain?"
+      },
+      "options": [
+        { "id": "drooling", "label": { "en": "Drooling", "ur": "رال ٹپکنا", "roman": "Raal tapakna" }, "set": {} },
+        { "id": "gums", "label": { "en": "Swollen / red gums", "ur": "مسوڑھے سوجے / سرخ", "roman": "Masoorhay sujay / surkh" }, "set": {} },
+        { "id": "chewing", "label": { "en": "Chewing / biting things", "ur": "چیزیں چبانا / کاٹنا", "roman": "Cheezein chabana / kaatna" }, "set": {} },
+        { "id": "fussy", "label": { "en": "Irritable / fussy", "ur": "چڑچڑاپن", "roman": "Chirchirapan" }, "set": {} },
+        { "id": "sleep", "label": { "en": "Poor sleep", "ur": "نیند خراب", "roman": "Neend kharab" }, "set": { "sleep_issues": 1 } }
+      ],
+      "next": "t2"
+    },
+    "t2": {
+      "type": "single_select",
+      "text": {
+        "en": "Does your baby have a fever or loose stools?",
+        "ur": "کیا بچے کو بخار یا دست ہیں؟",
+        "roman": "Kya bachay ko bukhar ya dast hain?"
+      },
+      "options": [
+        { "id": "no", "label": { "en": "No", "ur": "نہیں", "roman": "Nahi" }, "set": {} },
+        { "id": "fever", "label": { "en": "Yes, fever", "ur": "ہاں، بخار", "roman": "Haan, bukhar" }, "set": { "fever": 1 } },
+        { "id": "loose", "label": { "en": "Yes, loose stools", "ur": "ہاں، دست", "roman": "Haan, dast" }, "set": { "diarrhea": 1 } }
+      ],
+      "next": "q_redflags"
+    },
+
+    "d1": {
+      "type": "single_select",
+      "text": {
+        "en": "How many loose stools in the last 24 hours?",
+        "ur": "پچھلے 24 گھنٹوں میں کتنی بار پتلا پاخانہ آیا؟",
+        "roman": "Pichle 24 ghanton mein kitni baar patla paakhana aaya?"
+      },
+      "options": [
+        { "id": "few", "label": { "en": "A few (1–3)", "ur": "چند بار (1–3)", "roman": "Chand baar (1–3)" }, "set": {} },
+        { "id": "many", "label": { "en": "Many (4 or more)", "ur": "کئی بار (4 یا زیادہ)", "roman": "Kai baar (4 ya zyada)" }, "set": {} },
+        { "id": "constant", "label": { "en": "Watery, non-stop", "ur": "پانی جیسا، مسلسل", "roman": "Paani jaisa, musalsal" }, "set": {} }
+      ],
+      "next": "d2"
+    },
+    "d2": {
+      "type": "multi_select",
+      "text": {
+        "en": "Do you see any of these?",
+        "ur": "کیا ان میں سے کچھ نظر آ رہا ہے؟",
+        "roman": "Kya in mein se kuch nazar aa raha hai?"
+      },
+      "options": [
+        { "id": "dehydration", "label": { "en": "Dehydration (dry mouth, no tears, little urine)", "ur": "پانی کی کمی (خشک منہ، آنسو نہیں، پیشاب کم)", "roman": "Paani ki kami (khushk munh, aansu nahi, peshab kam)" },
+          "set": { "emergency": true } },
+        { "id": "blood", "label": { "en": "Blood in stool", "ur": "پاخانے میں خون", "roman": "Paakhane mein khoon" }, "set": { "emergency": true } },
+        { "id": "vomiting", "label": { "en": "Vomiting", "ur": "الٹیاں", "roman": "Ultiyan" }, "set": {} },
+        { "id": "fever", "label": { "en": "Fever", "ur": "بخار", "roman": "Bukhar" }, "set": { "fever": 1 } },
+        { "id": "none", "exclusive": true, "label": { "en": "None of these", "ur": "ان میں سے کچھ نہیں", "roman": "In mein se kuch nahi" }, "set": {} }
+      ],
+      "next": "q_redflags"
+    },
+
+    "s1": {
+      "type": "single_select",
+      "text": {
+        "en": "What is the sleep problem?",
+        "ur": "نیند کا مسئلہ کیا ہے؟",
+        "roman": "Neend ka masla kya hai?"
+      },
+      "options": [
+        { "id": "falling", "label": { "en": "Hard to fall asleep", "ur": "سونے میں مشکل", "roman": "Sone mein mushkil" }, "set": {} },
+        { "id": "waking", "label": { "en": "Wakes up often at night", "ur": "رات کو بار بار جاگنا", "roman": "Raat ko baar baar jaagna" }, "set": {} },
+        { "id": "crying", "label": { "en": "Cries a lot at night", "ur": "رات کو بہت رونا", "roman": "Raat ko bohat rona" }, "set": {} },
+        { "id": "snoring", "label": { "en": "Loud snoring", "ur": "زور سے خراٹے", "roman": "Zor se kharratay" }, "set": {} }
+      ],
+      "next": "s2"
+    },
+    "s2": {
+      "type": "multi_select",
+      "text": {
+        "en": "Is anything else bothering your baby?",
+        "ur": "کیا بچے کو کوئی اور تکلیف بھی ہے؟",
+        "roman": "Kya bachay ko koi aur takleef bhi hai?"
+      },
+      "options": [
+        { "id": "teething", "label": { "en": "Teething signs", "ur": "دانت نکلنے کی علامات", "roman": "Daant nikalne ki alamaat" }, "set": { "teething_pain": 1 } },
+        { "id": "cough", "label": { "en": "Cough / blocked nose", "ur": "کھانسی / بند ناک", "roman": "Khansi / band naak" }, "set": { "cold_cough": 1 } },
+        { "id": "none", "exclusive": true, "label": { "en": "Nothing else", "ur": "اور کچھ نہیں", "roman": "Aur kuch nahi" }, "set": {} }
+      ],
+      "next": "q_redflags"
+    },
+
+    "q_redflags": {
+      "type": "multi_select",
+      "text": {
+        "en": "Important: does your baby have any of these danger signs?",
+        "ur": "اہم: کیا بچے میں ان میں سے کوئی خطرے کی علامت ہے؟",
+        "roman": "Zaroori: kya bachay mein in mein se koi khatre ki alamat hai?"
+      },
+      "options": [
+        { "id": "breathing", "label": { "en": "Difficulty breathing", "ur": "سانس لینے میں دقت", "roman": "Saans lene mein mushkil" }, "set": { "emergency": true } },
+        { "id": "unconscious", "label": { "en": "Unconscious / very hard to wake", "ur": "بے ہوشی / مشکل سے جاگنا", "roman": "Behoshi / mushkil se jaagna" }, "set": { "emergency": true } },
+        { "id": "blue_lips", "label": { "en": "Blue lips or face", "ur": "نیلے ہونٹ یا چہرہ", "roman": "Neelay hont ya chehra" }, "set": { "emergency": true } },
+        { "id": "seizure", "label": { "en": "Seizure / fits", "ur": "دورہ / جھٹکے", "roman": "Daura / jhatke" }, "set": { "emergency": true } },
+        { "id": "no_urine", "label": { "en": "No urine for 8+ hours", "ur": "8 گھنٹے سے پیشاب نہیں", "roman": "8 ghante se peshab nahi" }, "set": { "emergency": true } },
+        { "id": "none", "exclusive": true, "label": { "en": "None of these", "ur": "ان میں سے کوئی نہیں", "roman": "In mein se koi nahi" }, "set": {} }
+      ],
+      "next": "q_notes"
+    },
+
+    "q_notes": {
+      "type": "freetext",
+      "optional": true,
+      "text": {
+        "en": "Anything else you'd like to tell me? (optional — you can write in Urdu, Roman Urdu or English)",
+        "ur": "کیا آپ کچھ اور بتانا چاہیں گے؟ (اختیاری — اردو، رومن اردو یا انگریزی میں لکھیں)",
+        "roman": "Kya aap kuch aur batana chahenge? (ikhtiyari — Urdu, Roman Urdu ya English mein likhein)"
+      },
+      "set_to": "notes",
+      "next": "submit"
+    },
+
+    "submit": {
+      "type": "submit",
+      "text": {
+        "en": "Thank you. Let me check your answers…",
+        "ur": "شکریہ۔ میں آپ کے جوابات دیکھ رہا ہوں…",
+        "roman": "Shukriya. Main aap ke jawabaat dekh raha hoon…"
+      }
+    }
+  }
+}

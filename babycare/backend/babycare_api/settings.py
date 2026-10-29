@@ -2,7 +2,10 @@ import os
 from pathlib import Path
 from datetime import timedelta
 import dj_database_url
+
 from decouple import config
+# GEMINI_API_KEY .env se load hoti hai (variable ka NAAM pass karna hai, value nahi)
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'apps.doctors',
     'apps.appointments',
     'apps.complaints',
+    'apps.ai',
 ]
 
 MIDDLEWARE = [
@@ -82,8 +86,9 @@ WSGI_APPLICATION = 'babycare_api.wsgi.application'
 # ═══════════════════════════════════════════════════════════
 
 DATABASES = {
+    # DATABASE_URL: OS env (production) ya .env (local) — decouple dono padhta hai
     'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        default=config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
         conn_max_age=600,
         conn_health_checks=True,
     )
